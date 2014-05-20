@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30324.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino", "Neutrino\Neutrino.csproj", "{FC452662-127E-411B-BF37-7E32B61A1695}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Api", "Neutrino.Api\Neutrino.Api.csproj", "{10EDA565-B3C5-4224-9AAC-496949E53090}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Core", "Neutrino.Core\Neutrino.Core.csproj", "{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Data", "Neutrino.Data\Neutrino.Data.csproj", "{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC452662-127E-411B-BF37-7E32B61A1695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC452662-127E-411B-BF37-7E32B61A1695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC452662-127E-411B-BF37-7E32B61A1695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC452662-127E-411B-BF37-7E32B61A1695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10EDA565-B3C5-4224-9AAC-496949E53090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10EDA565-B3C5-4224-9AAC-496949E53090}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10EDA565-B3C5-4224-9AAC-496949E53090}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10EDA565-B3C5-4224-9AAC-496949E53090}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
