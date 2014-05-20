@@ -13,35 +13,24 @@ namespace Neutrino.Data {
         }
 
         public async Task<string> Create(TimeSerie timeSerie) {
-            var path = GetDataFilePath(timeSerie.Id);
+            var path = _fileFinder.GetDataSetPath(timeSerie.Id);
             using (var fs = new FileStream(path, FileMode.CreateNew)) {
                 var header = DataFile.TimeSerieHeaderToBytes(timeSerie);
                 await fs.WriteAsync(header, 0, header.Length);
 
                 var body = DataFile.TimeSerieBodyToBytes(timeSerie);
-                await fs.WriteAsync(body, 0, header.Length);
+                await fs.WriteAsync(body, 0, body.Length);
                 return path;
             }
         }
 
-        private string GetDataFilePath(string id) {
-            string path = _fileFinder.GetDataSetBasePath(id);
-            //todo: to this only when creating
-            if (!Directory.Exists(path)) {
-                Directory.CreateDirectory(path);
-            }
-            path += Path.DirectorySeparatorChar + String.Join("", id.Split(Path.GetInvalidFileNameChars())) + ".ts";
-            
-            return path;
-        }
-
         public async Task<List<Occurrence>> List(string id, DateTime start, DateTime end) {
-            var path = GetDataFilePath(id);
+            var path = _fileFinder.GetDataSetPath(id);
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read)) {
                 TimeSerie ts = await DataFile.WalkStreamExtractingTimeSerieHeader(id, fs);
-                long indexStart = ts.GetIndex(start);
+                long indexStart = ts.GetIndex(start)*sizeof (Int64);
                 fs.Seek(indexStart, SeekOrigin.Current);
-                long num = (end - start).Ticks / ts.IntervalInMillisInMillis;
+                long num = ((end - start).Ticks / ts.IntervalInMillisInMillis / 10000) + 1;
 
                 var data = new byte[num * sizeof(decimal)];
                 await fs.ReadAsync(data, 0, (int) num);

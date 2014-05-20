@@ -11,9 +11,9 @@ namespace Neutrino.Data {
             var header = new byte[HeaderSize];
             await stream.ReadAsync(header, 0, HeaderSize);
             using (var br = new BinaryReader(new MemoryStream(header))) {
-                var start = new DateTime(br.ReadInt32());
-                var end = new DateTime(br.ReadInt32());
-                var current = new DateTime(br.ReadInt32());
+                var start = new DateTime(br.ReadInt64());
+                var end = new DateTime(br.ReadInt64());
+                var current = new DateTime(br.ReadInt64());
                 var interval = br.ReadInt32();
                 var ts = new TimeSerie(id, start, end, interval) {
                     Current = current
