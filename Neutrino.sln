@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Core", "Neutrino.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Data", "Neutrino.Data\Neutrino.Data.csproj", "{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Tests", "Neutrino.Tests\Neutrino.Tests.csproj", "{A195DEDF-3019-4B5E-B688-CA757D3104CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Tests.Integration", "Neutrino.Tests.Integration\Neutrino.Tests.Integration.csproj", "{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +39,20 @@ Global
 		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A195DEDF-3019-4B5E-B688-CA757D3104CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A195DEDF-3019-4B5E-B688-CA757D3104CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A195DEDF-3019-4B5E-B688-CA757D3104CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A195DEDF-3019-4B5E-B688-CA757D3104CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A195DEDF-3019-4B5E-B688-CA757D3104CD} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
+		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
 	EndGlobalSection
 EndGlobal

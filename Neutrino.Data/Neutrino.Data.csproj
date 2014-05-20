@@ -39,8 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataFile.cs" />
     <Compile Include="FileFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimeSerieService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Neutrino.Core\Neutrino.Core.csproj">

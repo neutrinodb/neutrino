@@ -60,10 +60,21 @@
   <ItemGroup>
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimeSerieController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Neutrino.Core\Neutrino.Core.csproj">
+      <Project>{6569c9ad-8eda-4fcc-94cb-9f3394f55a0b}</Project>
+      <Name>Neutrino.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neutrino.Data\Neutrino.Data.csproj">
+      <Project>{30c27102-fc4e-40df-a7dd-a6e9020c8be8}</Project>
+      <Name>Neutrino.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
