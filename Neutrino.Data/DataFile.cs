@@ -7,7 +7,7 @@ namespace Neutrino.Data {
     public static class DataFile {
         private const int HeaderSize = (sizeof (Int64) * 3) + sizeof(Int32);
 
-        public static async Task<TimeSerie> WalkStreamExtractingTimeSerieHeader(string id, Stream stream) {
+        public static async Task<TimeSerieInfo> WalkStreamExtractingTimeSerieHeader(string id, Stream stream) {
             var header = new byte[HeaderSize];
             await stream.ReadAsync(header, 0, HeaderSize);
             using (var br = new BinaryReader(new MemoryStream(header))) {
@@ -15,27 +15,27 @@ namespace Neutrino.Data {
                 var end = new DateTime(br.ReadInt64());
                 var current = new DateTime(br.ReadInt64());
                 var interval = br.ReadInt32();
-                var ts = new TimeSerie(id, start, end, interval) {
+                var ts = new TimeSerieInfo(id, start, end, interval) {
                     Current = current
                 };
                 return ts;
             }
         }
 
-        public static byte[] TimeSerieHeaderToBytes(TimeSerie timeSerie) {
+        public static byte[] TimeSerieHeaderToBytes(TimeSerieInfo timeSerieInfo) {
             var ms = new MemoryStream();
             using (var bw = new BinaryWriter(ms)) {
-                bw.Write(timeSerie.Start.Ticks);
-                bw.Write(timeSerie.End.Ticks);
-                bw.Write(timeSerie.Current.Ticks);
-                bw.Write(timeSerie.IntervalInMillisInMillis);
+                bw.Write(timeSerieInfo.Start.ToBinary());
+                bw.Write(timeSerieInfo.End.ToBinary());
+                bw.Write(timeSerieInfo.Current.ToBinary());
+                bw.Write(timeSerieInfo.IntervalInMillis);
             }
             return ms.ToArray();
         }
-        public static byte[] TimeSerieBodyToBytes(TimeSerie timeSerie) {
+        public static byte[] TimeSerieBodyToBytes(TimeSerieInfo timeSerieInfo) {
             var ms = new MemoryStream();
             using (var bw = new BinaryWriter(ms)) {
-                for (int i = 0; i < timeSerie.TotalLength; i++) {
+                for (int i = 0; i < timeSerieInfo.TotalLength; i++) {
                     bw.Write(Decimal.MinValue);
                 }
             }

@@ -17,12 +17,12 @@ namespace Neutrino.Api {
             _service = new TimeSerieService(new FileFinder("DataSets"));
         }
 
-        public async Task<List<Occurrence>> Get(string id, DateTime start, DateTime end) {
+        public async Task<TimeSerie> Get(string id, DateTime start, DateTime end) {
             return await _service.List(id, start, end);
         }
 
-        public async Task<string> Put(TimeSerie timeSerie) {
-            return await _service.Create(timeSerie);
+        public async Task<string> Put(TimeSerieInfo timeSerieInfo) {
+            return await _service.Create(timeSerieInfo);
         }
     }
 }
