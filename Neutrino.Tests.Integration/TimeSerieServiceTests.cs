@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Neutrino.Core;
 using Neutrino.Data;
@@ -21,6 +22,31 @@ namespace Neutrino.Tests.Integration {
             for (int i = 0; i < 5; i++) {
                 await service.Add("med1", new Occurrence { DateTime = start.AddMinutes(i), Value = i });                
             }
+            var list = await service.List(id, start, end);
+            Assert.AreEqual(5, list.Occurrences.Count);
+
+            for (int i = 0; i < 5; i++) {
+                Assert.AreEqual(i, list.Occurrences[i].Value);
+            }
+        }
+
+        [Test]
+        public async void TestAddOccurrences() {
+            string id = "med1";
+            var fileFinder = new FileFinder("DataSets");
+            File.Delete(fileFinder.GetDataSetPath(id));
+
+            var start = new DateTime(2010, 1, 1);
+            var end = start.AddMinutes(4);
+            var service = new TimeSerieService(fileFinder);
+            await service.Create(new TimeSerieInfo(id, start, end, Interval.OneMinute));
+
+            var occurrences = new List<Occurrence>();
+            for (int i = 0; i < 5; i++) {
+                occurrences.Add(new Occurrence { DateTime = start.AddMinutes(i), Value = i });
+            }
+            await service.Add("med1", occurrences);                
+
             var list = await service.List(id, start, end);
             Assert.AreEqual(5, list.Occurrences.Count);
 

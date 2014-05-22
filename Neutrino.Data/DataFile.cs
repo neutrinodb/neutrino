@@ -32,7 +32,7 @@ namespace Neutrino.Data {
             }
             return ms.ToArray();
         }
-        public static byte[] TimeSerieBodyToBytes(TimeSerieInfo timeSerieInfo) {
+        public static byte[] EmptyTimeSerieBodyToBytes(TimeSerieInfo timeSerieInfo) {
             var ms = new MemoryStream();
             using (var bw = new BinaryWriter(ms)) {
                 for (int i = 0; i < timeSerieInfo.TotalLength; i++) {

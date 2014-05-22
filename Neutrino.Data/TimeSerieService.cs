@@ -20,7 +20,7 @@ namespace Neutrino.Data {
                 var header = DataFile.TimeSerieHeaderToBytes(timeSerieInfo);
                 await fs.WriteAsync(header, 0, header.Length);
 
-                var body = DataFile.TimeSerieBodyToBytes(timeSerieInfo);
+                var body = DataFile.EmptyTimeSerieBodyToBytes(timeSerieInfo);
                 await fs.WriteAsync(body, 0, body.Length);
                 return path;
             }
@@ -59,8 +59,24 @@ namespace Neutrino.Data {
                 long indexStart = ts.GetIndex(occurrence.DateTime)*RegisterSize;
                 fs.Seek(indexStart, SeekOrigin.Current);
                 decimal value = !occurrence.Value.HasValue ? Decimal.MinValue : occurrence.Value.Value;
-                var bytes = new byte[16];
-                Buffer.BlockCopy(decimal.GetBits(value), 0, bytes, 0, 16);
+                var bytes = new byte[RegisterSize];
+                Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, 0, 16);
+                await fs.WriteAsync(bytes, 0, bytes.Length);
+            }
+        }
+
+
+        public async Task Add(string id, List<Occurrence> occurrences) {
+            var path = _fileFinder.GetDataSetPath(id);
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) {
+                TimeSerieInfo ts = await DataFile.WalkStreamExtractingTimeSerieHeader(id, fs);
+                long indexStart = ts.GetIndex(occurrences[0].DateTime) * RegisterSize;
+                fs.Seek(indexStart, SeekOrigin.Current);
+                var bytes = new byte[occurrences.Count * RegisterSize];
+                for (int i = 0; i < occurrences.Count; i++) {
+                    decimal value = !occurrences[i].Value.HasValue ? Decimal.MinValue : occurrences[i].Value.Value;
+                    Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, i * RegisterSize, 16);
+                }
                 await fs.WriteAsync(bytes, 0, bytes.Length);
             }
         }
