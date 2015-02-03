@@ -16,20 +16,11 @@ namespace Neutrino.Data {
         }
 
         public string GetDataSetPath(string id) {
-            string subdir = GetSubdir(id);
-            return _basePath + Path.DirectorySeparatorChar + subdir + Path.DirectorySeparatorChar + String.Join("", id.Split(Path.GetInvalidFileNameChars())) + ".ts";
-        }
-
-        private string GetSubdir(string id) {
-            int num = 0;
-            for (int i = 0; i < id.Length; i++) {
-                num+= id[i];
-            }
-            string subdir = "hash" + num % 1000;
-            if (!Directory.Exists(_basePath + Path.DirectorySeparatorChar + subdir)) {
-                Directory.CreateDirectory(_basePath + Path.DirectorySeparatorChar + subdir);
-            }
-            return subdir;
+            return String.Format("{0}{1}{2}{1}{3}.ts", 
+                _basePath, 
+                Path.DirectorySeparatorChar, 
+                id, 
+                String.Join("", id.Split(Path.GetInvalidFileNameChars())));
         }
     }
 }

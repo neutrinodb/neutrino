@@ -11,7 +11,5 @@ namespace Neutrino.Api {
             config.Routes.MapHttpRoute("default", "api/{controller}");
             app.UseWebApi(config);
         }
-
-        
     }
 }

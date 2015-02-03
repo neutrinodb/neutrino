@@ -17,7 +17,7 @@ namespace Neutrino.Data {
         public async Task<string> Create(TimeSerieInfo timeSerieInfo) {
             var path = _fileFinder.GetDataSetPath(timeSerieInfo.Id);
             using (var fs = new FileStream(path, FileMode.CreateNew)) {
-                var header = DataFile.TimeSerieHeaderToBytes(timeSerieInfo);
+                var header = DataFile.SerializeTimeSerieInfo(timeSerieInfo);
                 await fs.WriteAsync(header, 0, header.Length);
 
                 var body = DataFile.EmptyTimeSerieBodyToBytes(timeSerieInfo);
@@ -53,29 +53,27 @@ namespace Neutrino.Data {
         }
 
         public async Task Add(string id, Occurrence occurrence) {
-            var path = _fileFinder.GetDataSetPath(id);
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) {
-                TimeSerieInfo ts = await DataFile.WalkStreamExtractingTimeSerieHeader(id, fs);
-                long indexStart = ts.GetIndex(occurrence.DateTime)*RegisterSize;
-                fs.Seek(indexStart, SeekOrigin.Current);
-                decimal value = !occurrence.Value.HasValue ? Decimal.MinValue : occurrence.Value.Value;
-                var bytes = new byte[RegisterSize];
-                Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, 0, 16);
-                await fs.WriteAsync(bytes, 0, bytes.Length);
-            }
+            await Add(id, new List<Occurrence> {occurrence});
         }
-
 
         public async Task Add(string id, List<Occurrence> occurrences) {
             var path = _fileFinder.GetDataSetPath(id);
+            DataFile.ReadHeader(id, path);
+            TimeSerieInfo ts;
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) {
-                TimeSerieInfo ts = await DataFile.WalkStreamExtractingTimeSerieHeader(id, fs);
-                long indexStart = ts.GetIndex(occurrences[0].DateTime) * RegisterSize;
+                ts = await DataFile.WalkStreamExtractingTimeSerieHeader(id, fs);
+            }
+            var dateEnd = occurrences.Last().DateTime;
+            if (dateEnd > ts.End) {
+                await DataFile.ExtendFile(ts, dateEnd);
+            }
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) {
+                long indexStart = ts.GetIndex(occurrences[0].DateTime)*RegisterSize;
                 fs.Seek(indexStart, SeekOrigin.Current);
-                var bytes = new byte[occurrences.Count * RegisterSize];
+                var bytes = new byte[occurrences.Count*RegisterSize];
                 for (int i = 0; i < occurrences.Count; i++) {
                     decimal value = !occurrences[i].Value.HasValue ? Decimal.MinValue : occurrences[i].Value.Value;
-                    Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, i * RegisterSize, 16);
+                    Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, i*RegisterSize, 16);
                 }
                 await fs.WriteAsync(bytes, 0, bytes.Length);
             }

@@ -8,16 +8,19 @@ namespace Neutrino.Core {
         public int IntervalInMillis { get; private set; }
         public string Id { get; private set; }
 
+        public int AutoExtendStep { get; private set; }
+
         public long TotalLength {
             get { return GetIndex(End) + 1; }
         }
 
-        public TimeSerieInfo(string id, DateTime start, DateTime end, int intervalInMillis) {
+        public TimeSerieInfo(string id, DateTime start, DateTime end, int intervalInMillis, int autoExtendStep = -1) {
             Id = id;
             Start = start;
             End = end;
             IntervalInMillis = intervalInMillis;
             Current = Start;
+            AutoExtendStep = autoExtendStep < 0 ? 1000 : autoExtendStep;
             //todo: check if end is valid according to start and interval
         }
 

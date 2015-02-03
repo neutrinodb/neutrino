@@ -42,10 +42,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\FileFinderTests.cs" />
+    <Compile Include="Core\TimeSerieInfoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Neutrino.Core\Neutrino.Core.csproj">
+      <Project>{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}</Project>
+      <Name>Neutrino.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neutrino.Data\Neutrino.Data.csproj">
+      <Project>{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}</Project>
+      <Name>Neutrino.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,25 +4,28 @@ using System.Threading.Tasks;
 using Neutrino.Core;
 
 namespace Neutrino.Data {
-    public static class DataFile {
+    public class DataFile {
         private const int HeaderSize = (sizeof (Int64) * 3) + sizeof(Int32);
 
-        public static async Task<TimeSerieInfo> WalkStreamExtractingTimeSerieHeader(string id, Stream stream) {
+        public async Task<TimeSerieInfo> ReadHeader(string id, string path) {
             var header = new byte[HeaderSize];
-            await stream.ReadAsync(header, 0, HeaderSize);
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read)) {
+                await fs.ReadAsync(header, 0, HeaderSize);
+            }
             using (var br = new BinaryReader(new MemoryStream(header))) {
                 var start = new DateTime(br.ReadInt64());
                 var end = new DateTime(br.ReadInt64());
                 var current = new DateTime(br.ReadInt64());
                 var interval = br.ReadInt32();
-                var ts = new TimeSerieInfo(id, start, end, interval) {
+                var autoExtendStep = br.ReadInt32();
+                var ts = new TimeSerieInfo(id, start, end, interval, autoExtendStep) {
                     Current = current
                 };
                 return ts;
             }
         }
 
-        public static byte[] TimeSerieHeaderToBytes(TimeSerieInfo timeSerieInfo) {
+        public static byte[] SerializeTimeSerieInfo(TimeSerieInfo timeSerieInfo) {
             var ms = new MemoryStream();
             using (var bw = new BinaryWriter(ms)) {
                 bw.Write(timeSerieInfo.Start.ToBinary());
@@ -40,6 +43,10 @@ namespace Neutrino.Data {
                 }
             }
             return ms.ToArray();
+        }
+
+        public static Task ExtendFile(TimeSerieInfo ts, DateTime dateEnd) {
+            return null;
         }
     }
 }
