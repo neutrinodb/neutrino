@@ -5,10 +5,11 @@ using Neutrino.Core;
 
 namespace Neutrino.Data {
     public class DataFile {
-        private const int HeaderSize = (sizeof (Int64) * 3) + sizeof(Int32);
+        public static readonly int HeaderSize = (sizeof (Int64) * 3) + sizeof(Int32) * 2;
 
         public async Task<TimeSerieInfo> ReadHeader(string id, string path) {
             var header = new byte[HeaderSize];
+            TimeSerieInfo ts;
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read)) {
                 await fs.ReadAsync(header, 0, HeaderSize);
             }
@@ -18,11 +19,11 @@ namespace Neutrino.Data {
                 var current = new DateTime(br.ReadInt64());
                 var interval = br.ReadInt32();
                 var autoExtendStep = br.ReadInt32();
-                var ts = new TimeSerieInfo(id, start, end, interval, autoExtendStep) {
+                ts = new TimeSerieInfo(id, start, end, interval, autoExtendStep) {
                     Current = current
                 };
-                return ts;
             }
+            return ts;
         }
 
         public static byte[] SerializeTimeSerieInfo(TimeSerieInfo timeSerieInfo) {
@@ -32,6 +33,7 @@ namespace Neutrino.Data {
                 bw.Write(timeSerieInfo.End.ToBinary());
                 bw.Write(timeSerieInfo.Current.ToBinary());
                 bw.Write(timeSerieInfo.IntervalInMillis);
+                bw.Write(timeSerieInfo.AutoExtendStep);
             }
             return ms.ToArray();
         }

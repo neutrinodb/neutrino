@@ -9,7 +9,7 @@ namespace Neutrino.Tests.Integration {
     public class TimeSerieServiceTests {
 
         [Test]
-        public async void TestPut() {
+        public async void Should_put_ocurrences() {
             string id = "med1";
             var fileFinder = new FileFinder("DataSets");
             File.Delete(fileFinder.GetDataSetPath(id));
@@ -31,7 +31,7 @@ namespace Neutrino.Tests.Integration {
         }
 
         [Test]
-        public async void TestAddOccurrences() {
+        public async void Should_add_ocurrences() {
             string id = "med1";
             var fileFinder = new FileFinder("DataSets");
             File.Delete(fileFinder.GetDataSetPath(id));
@@ -56,7 +56,7 @@ namespace Neutrino.Tests.Integration {
         }
 
         [Test]
-        public async void Test() {
+        public async void Should_list_ocurrences() {
             string id = "med1";
             var fileFinder = new FileFinder("DataSets");
             File.Delete(fileFinder.GetDataSetPath(id));
@@ -71,6 +71,7 @@ namespace Neutrino.Tests.Integration {
         }
 
         [Test]
+        [Ignore]
         public async void CreateFiles() {
             var fileFinder = new FileFinder("DataSets");
             var service = new TimeSerieService(fileFinder);

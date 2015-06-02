@@ -10,17 +10,13 @@ namespace Neutrino.Data {
 
         public FileFinder(string basePath) {
             _basePath = basePath;
-            if (!Directory.Exists(_basePath)) {
-                Directory.CreateDirectory(_basePath);
-            }
+            Directory.CreateDirectory(_basePath);
         }
 
         public string GetDataSetPath(string id) {
-            return String.Format("{0}{1}{2}{1}{3}.ts", 
-                _basePath, 
-                Path.DirectorySeparatorChar, 
-                id, 
-                String.Join("", id.Split(Path.GetInvalidFileNameChars())));
+            id = id.Replace("/", "\\");
+            var fullPath = Path.Combine(_basePath, id);
+            return fullPath;
         }
     }
 }

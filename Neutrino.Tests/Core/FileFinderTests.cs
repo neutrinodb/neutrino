@@ -13,7 +13,7 @@ namespace Neutrino.Tests.Core {
         [Test]
         public void Test() {
             var fileFinder = new FileFinder("DataSets");
-            Assert.AreEqual("", fileFinder.GetDataSetPath("/foo/bar"));
+            Assert.AreEqual("\\foo\\bar", fileFinder.GetDataSetPath("/foo/bar"));
         }
     }
 }
