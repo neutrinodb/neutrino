@@ -44,7 +44,7 @@
     <Compile Include="ITimeSerieService.cs" />
     <Compile Include="Occurrence.cs" />
     <Compile Include="TimeSerie.cs" />
-    <Compile Include="TimeSerieInfo.cs" />
+    <Compile Include="TimeSerieHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

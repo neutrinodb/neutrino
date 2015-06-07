@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Neutrino.Core {
-    public class TimeSerieInfo {
+    public class TimeSerieHeader {
         public DateTime Start { get; private set; }
         public DateTime End { get; private set; }
         public DateTime Current { get; set; }
@@ -14,7 +14,7 @@ namespace Neutrino.Core {
             get { return GetIndex(End) + 1; }
         }
 
-        public TimeSerieInfo(string id, DateTime start, DateTime end, int intervalInMillis, int autoExtendStep = -1) {
+        public TimeSerieHeader(string id, DateTime start, DateTime end, int intervalInMillis, int autoExtendStep = -1) {
             Id = id;
             Start = start;
             End = end;

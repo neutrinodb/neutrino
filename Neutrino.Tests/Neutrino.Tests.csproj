@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\FileFinderTests.cs" />
-    <Compile Include="Core\TimeSerieInfoTests.cs" />
+    <Compile Include="Core\TimeSerieHeaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

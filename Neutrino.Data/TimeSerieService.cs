@@ -14,72 +14,55 @@ namespace Neutrino.Data {
             _fileFinder = fileFinder;
         }
 
-        public async Task<string> Create(TimeSerieInfo timeSerieInfo) {
-            var path = _fileFinder.GetDataSetPath(timeSerieInfo.Id);
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            using (var fs = new FileStream(path, FileMode.CreateNew)) {
-                var header = DataFile.SerializeTimeSerieInfo(timeSerieInfo);
-                await fs.WriteAsync(header, 0, header.Length);
-
-                var body = DataFile.EmptyTimeSerieBodyToBytes(timeSerieInfo);
-                await fs.WriteAsync(body, 0, body.Length);
-                return path;
-            }
+        public async Task<string> Create(TimeSerieHeader timeSerieHeader) {
+            var fullPath = _fileFinder.GetDataSetPath(timeSerieHeader.Id);
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            var dataFile = new DataFile(_fileFinder, RegisterSize);
+            await dataFile.CreateAsync(timeSerieHeader);
+            return fullPath;
         }
 
         public async Task<TimeSerie> List(string id, DateTime start, DateTime end) {
-            var path = _fileFinder.GetDataSetPath(id);
-            var file = new DataFile();
-            TimeSerieInfo ts = await file.ReadHeader(id, path);
-
-            long num = ((long) (end - start).TotalMilliseconds / ts.IntervalInMillis) + 1;
-            var data = new byte[num * RegisterSize];
-
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read)) {
-                long indexStart = GetIndexStart(start, ts);
-                fs.Seek(indexStart, SeekOrigin.Current);
-                await fs.ReadAsync(data, 0, data.Length);
-            }
-            using (var br = new BinaryReader(new MemoryStream(data))) {
-                DateTime current = start;
-                var list = new List<Occurrence>();
-                for (int i = 0; i < num; i++) {
-                    current = current.AddMilliseconds(ts.IntervalInMillis);
-                    var oc = new Occurrence();
-                    oc.DateTime = current;
-                    oc.Value = br.ReadDecimal();
-                    list.Add(oc);
-                }
-                return new TimeSerie(ts.IntervalInMillis, list);
-            }
+            var dataFile = new DataFile(_fileFinder, RegisterSize);
+            var headerBytes = await dataFile.ReadHeaderAsync(id);
+            var timeSerieHeader = DeserializeHeader(id, headerBytes);
+            long numberOfRegisters = CalcNumberOfRegisters(start, end, timeSerieHeader.IntervalInMillis);
+            return await dataFile.ReadRegistersAsync(timeSerieHeader, start, numberOfRegisters);
         }
 
-        private static long GetIndexStart(DateTime start, TimeSerieInfo ts) {
-            return DataFile.HeaderSize + ts.GetIndex(start) * RegisterSize;
+        private static TimeSerieHeader DeserializeHeader(string id, byte[] bytes) {
+            TimeSerieHeader ts;
+            using (var br = new BinaryReader(new MemoryStream(bytes))) {
+                var start = new DateTime(br.ReadInt64());
+                var end = new DateTime(br.ReadInt64());
+                var current = new DateTime(br.ReadInt64());
+                var interval = br.ReadInt32();
+                var autoExtendStep = br.ReadInt32();
+                ts = new TimeSerieHeader(id, start, end, interval, autoExtendStep) {
+                    Current = current
+                };
+            }
+            return ts;
+        }
+
+        private static long CalcNumberOfRegisters(DateTime start, DateTime end, long intervalInMillis) {
+            return ((long) (end - start).TotalMilliseconds / intervalInMillis) + 1;
         }
 
         public async Task Add(string id, Occurrence occurrence) {
             await Add(id, new List<Occurrence> {occurrence});
         }
 
-        public async Task Add(string id, List<Occurrence> occurrences) {
-            var path = _fileFinder.GetDataSetPath(id);
-            var file = new DataFile();
-            var ts = await file.ReadHeader(id, path);
+        public async Task Add(string id,  List<Occurrence> occurrences) {
+            var dataFile = new DataFile(_fileFinder, RegisterSize);
+            var headerBytes = await dataFile.ReadHeaderAsync(id);
+            var timeSerieHeader = DeserializeHeader(id, headerBytes);
+            
             var dateEnd = occurrences.Last().DateTime;
-            if (dateEnd > ts.End) {
-                await DataFile.ExtendFile(ts, dateEnd);
+            if (dateEnd > timeSerieHeader.End) {
+                await dataFile.ExtendFileAsync(timeSerieHeader, dateEnd);
             }
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) {
-                long indexStart = GetIndexStart(occurrences[0].DateTime, ts);
-                fs.Seek(indexStart, SeekOrigin.Current);
-                var bytes = new byte[occurrences.Count*RegisterSize];
-                for (int i = 0; i < occurrences.Count; i++) {
-                    decimal value = !occurrences[i].Value.HasValue ? Decimal.MinValue : occurrences[i].Value.Value;
-                    Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, i*RegisterSize, 16);
-                }
-                await fs.WriteAsync(bytes, 0, bytes.Length);
-            }
+            await dataFile.WriteRegistersAsync(timeSerieHeader, occurrences);
         }
     }
 }

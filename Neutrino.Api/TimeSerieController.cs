@@ -21,8 +21,8 @@ namespace Neutrino.Api {
             return await _service.List(id, start, end);
         }
 
-        public async Task<string> Put(TimeSerieInfo timeSerieInfo) {
-            return await _service.Create(timeSerieInfo);
+        public async Task<string> Put(TimeSerieHeader timeSerieHeader) {
+            return await _service.Create(timeSerieHeader);
         }
     }
 }
