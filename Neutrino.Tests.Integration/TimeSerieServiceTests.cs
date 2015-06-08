@@ -70,16 +70,39 @@ namespace Neutrino.Tests.Integration {
         }
 
         [Test]
-        public async void Should_extend_datafile() {
-            await CreateDatafile(4);
-
+        public async void Should_create_datafile_with_correct_size() {
+            await CreateDatafile(5);
+            var path = _fileFinder.GetDataSetPath(_id);
+            int filesize = DataFile.HeaderSize + DataFile.RegisterSize * 5;
+            Assert.AreEqual(filesize, new FileInfo(path).Length);
         }
 
-        private async Task CreateDatafile(int minutes) {
+        [Test]
+        [TestCase(5)]
+        [TestCase(10)]
+        [TestCase(1000)]
+        public async void Should_extend_datafile(int increaseInMinutes) {
+            var header = await CreateDatafile(5);
+            await _service.Add(_id, new Occurrence(new DateTime(2010, 1, 1).AddMinutes(increaseInMinutes), 10));
+            var path = _fileFinder.GetDataSetPath(_id);
+            int filesize = DataFile.HeaderSize + DataFile.RegisterSize * (5 + header.AutoExtendStep);
+            Assert.AreEqual(filesize, new FileInfo(path).Length);
+        }
+
+        [Test]
+        [ExpectedException(typeof(DateAfterLimitException))]
+        public async void Should_refuse_to_extend_datafile_when_date_later_than_limit() {
+            var header = await CreateDatafile(5);
+            await _service.Add(_id, new Occurrence(new DateTime(2010, 1, 1).AddMinutes(header.AutoExtendStep + 5), 10));
+        }
+
+        private async Task<TimeSerieHeader> CreateDatafile(int registers) {
             var start = new DateTime(2010, 1, 1);
-            var end = start.AddMinutes(minutes);
+            var end = start.AddMinutes(registers - 1);
             var service = new TimeSerieService(_fileFinder);
-            await service.Create(new TimeSerieHeader(_id, start, end, Interval.OneMinute));
+            var header = new TimeSerieHeader(_id, start, end, Interval.OneMinute);
+            await service.Create(header);
+            return header;
         }
 
         [Test]

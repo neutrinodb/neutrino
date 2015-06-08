@@ -2,8 +2,8 @@
 
 namespace Neutrino.Core {
     public class TimeSerieHeader {
-        public DateTime Start { get; private set; }
-        public DateTime End { get; private set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
         public DateTime Current { get; set; }
         public int IntervalInMillis { get; private set; }
         public string Id { get; private set; }

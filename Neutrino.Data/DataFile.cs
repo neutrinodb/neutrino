@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Linq;
 using System.Threading.Tasks;
 using Neutrino.Core;
 
 namespace Neutrino.Data {
     public class DataFile {
         private readonly IFileFinder _fileFinder;
-        private readonly int _registerSize;
         public static readonly int HeaderSize = (sizeof (Int64) * 3) + sizeof(Int32) * 2;
+        public static readonly int RegisterSize = sizeof(decimal);
 
-        public DataFile(IFileFinder fileFinder, int registerSize) {
+        public DataFile(IFileFinder fileFinder) {
             _fileFinder = fileFinder;
-            _registerSize = registerSize;
         }
 
         public async Task<byte[]> ReadHeaderAsync(string id) {
@@ -27,7 +26,7 @@ namespace Neutrino.Data {
 
         public async Task<TimeSerie> ReadRegistersAsync(TimeSerieHeader header, DateTime start, long numberOfRegisters) {
             var path = _fileFinder.GetDataSetPath(header.Id);
-            var data = new byte[numberOfRegisters * _registerSize];
+            var data = new byte[numberOfRegisters * RegisterSize];
             long indexStart = GetIndexStart(start, header);
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read)) {
                 fs.Seek(indexStart, SeekOrigin.Current);
@@ -37,7 +36,7 @@ namespace Neutrino.Data {
         }
 
         private long GetIndexStart(DateTime start, TimeSerieHeader ts) {
-            return HeaderSize + ts.GetIndex(start) * _registerSize;
+            return HeaderSize + ts.GetIndex(start) * RegisterSize;
         }
 
         private static TimeSerie DeserializeRegisters(byte[] data, DateTime start, long numberOfRegisters, int intervalInMillis) {
@@ -77,8 +76,14 @@ namespace Neutrino.Data {
             return ms.ToArray();
         }
 
-        public Task ExtendFileAsync(TimeSerieHeader ts, DateTime dateEnd) {
-            throw new NotImplementedException();
+        public async Task ExtendFileAsync(TimeSerieHeader timeSerieHeader, DateTime dateEnd) {
+            var nextDate = timeSerieHeader.End.Add(TimeSpan.FromMilliseconds(timeSerieHeader.IntervalInMillis));
+            var list = new List<Occurrence>(timeSerieHeader.AutoExtendStep);
+            for (int i = 0; i < timeSerieHeader.AutoExtendStep; i++) {
+                list.Add(new Occurrence(nextDate.AddMilliseconds(timeSerieHeader.IntervalInMillis * i), null));
+            }
+            timeSerieHeader.End = list.Last().DateTime;
+            await WriteRegistersAsync(timeSerieHeader, list);
         }
 
         public async Task CreateAsync(TimeSerieHeader timeSerieHeader) {
@@ -91,15 +96,15 @@ namespace Neutrino.Data {
             }
         }
 
-        public async Task WriteRegistersAsync(TimeSerieHeader header, List<Occurrence> occurrences) {
-            var path = _fileFinder.GetDataSetPath(header.Id);
+        public async Task WriteRegistersAsync(TimeSerieHeader timeSerieHeader, List<Occurrence> occurrences) {
+            var path = _fileFinder.GetDataSetPath(timeSerieHeader.Id);
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) {
-                long indexStart = GetIndexStart(occurrences[0].DateTime, header);
-                fs.Seek(indexStart, SeekOrigin.Current);
-                var bytes = new byte[occurrences.Count * _registerSize];
+                long indexStart = GetIndexStart(occurrences[0].DateTime, timeSerieHeader);
+                fs.Seek(indexStart, SeekOrigin.Begin);
+                var bytes = new byte[occurrences.Count * RegisterSize];
                 for (int i = 0; i < occurrences.Count; i++) {
                     decimal value = !occurrences[i].Value.HasValue ? Decimal.MinValue : occurrences[i].Value.Value;
-                    Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, i * _registerSize, 16);
+                    Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, i * RegisterSize, 16);
                 }
                 await fs.WriteAsync(bytes, 0, bytes.Length);
             }
