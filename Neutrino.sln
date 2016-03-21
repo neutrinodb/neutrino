@@ -1,21 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino", "Neutrino\Neutrino.csproj", "{FC452662-127E-411B-BF37-7E32B61A1695}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Api", "Neutrino.Api\Neutrino.Api.csproj", "{10EDA565-B3C5-4224-9AAC-496949E53090}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Core", "Neutrino.Core\Neutrino.Core.csproj", "{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Data", "Neutrino.Data\Neutrino.Data.csproj", "{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Tests", "Neutrino.Tests\Neutrino.Tests.csproj", "{A195DEDF-3019-4B5E-B688-CA757D3104CD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neutrino.Tests.Integration", "Neutrino.Tests.Integration\Neutrino.Tests.Integration.csproj", "{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Tests", "tests\Neutrino.Tests\Neutrino.Tests.xproj", "{29C0D540-27D9-469A-BD37-B2F08F774F54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6380BEE9-A734-4EA2-867E-4D5D3FC2AC9C}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Tests.Integration", "tests\Neutrino.Tests.Integration\Neutrino.Tests.Integration.xproj", "{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F7849C6-DC80-4F04-B8BF-11A88D837C9F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino", "src\Neutrino\Neutrino.xproj", "{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Server", "src\Neutrino.Server\Neutrino.Server.xproj", "{41C75F0F-590D-4BEC-BC40-0CE988BF1918}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,36 +26,30 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FC452662-127E-411B-BF37-7E32B61A1695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FC452662-127E-411B-BF37-7E32B61A1695}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FC452662-127E-411B-BF37-7E32B61A1695}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FC452662-127E-411B-BF37-7E32B61A1695}.Release|Any CPU.Build.0 = Release|Any CPU
-		{10EDA565-B3C5-4224-9AAC-496949E53090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10EDA565-B3C5-4224-9AAC-496949E53090}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10EDA565-B3C5-4224-9AAC-496949E53090}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10EDA565-B3C5-4224-9AAC-496949E53090}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6569C9AD-8EDA-4FCC-94CB-9F3394F55A0B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{30C27102-FC4E-40DF-A7DD-A6E9020C8BE8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A195DEDF-3019-4B5E-B688-CA757D3104CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A195DEDF-3019-4B5E-B688-CA757D3104CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A195DEDF-3019-4B5E-B688-CA757D3104CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A195DEDF-3019-4B5E-B688-CA757D3104CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29C0D540-27D9-469A-BD37-B2F08F774F54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29C0D540-27D9-469A-BD37-B2F08F774F54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29C0D540-27D9-469A-BD37-B2F08F774F54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29C0D540-27D9-469A-BD37-B2F08F774F54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41C75F0F-590D-4BEC-BC40-0CE988BF1918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41C75F0F-590D-4BEC-BC40-0CE988BF1918}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41C75F0F-590D-4BEC-BC40-0CE988BF1918}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41C75F0F-590D-4BEC-BC40-0CE988BF1918}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A195DEDF-3019-4B5E-B688-CA757D3104CD} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
-		{ACE3DBAB-22CE-409D-94F8-29A5A37BA173} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
+		{29C0D540-27D9-469A-BD37-B2F08F774F54} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
+		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
+		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE} = {0F7849C6-DC80-4F04-B8BF-11A88D837C9F}
+		{41C75F0F-590D-4BEC-BC40-0CE988BF1918} = {0F7849C6-DC80-4F04-B8BF-11A88D837C9F}
 	EndGlobalSection
 EndGlobal

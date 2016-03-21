@@ -1,0 +1,26 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Neutrino.Tests.Integration Console Application",
+  "authors": [ "Andre" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "nunitlite": "3.0.1",
+    "Neutrino": "0.1.0-alpha",
+    "moq": "4.2.1510.2205"
+  },
+
+  "commands": {
+    "Neutrino.Tests.Integration": "Neutrino.Tests.Integration"
+  },
+
+  "frameworks": {
+    "dnx451": { }
+  }
+}
