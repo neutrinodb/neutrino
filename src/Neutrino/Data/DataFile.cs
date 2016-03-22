@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 namespace Neutrino.Data {
     public class DataFile {
         private readonly IFileFinder _fileFinder;
-        public static readonly int HeaderSize = (sizeof (Int64) * 3) + sizeof(Int32) * 2;
+        public static readonly int HeaderSize = (sizeof(Int64) * 3) + sizeof(Int32) * 2;
         public static readonly int RegisterSize = sizeof(decimal);
+        public static object _syncRoot = new object();
 
         public DataFile(IFileFinder fileFinder) {
             _fileFinder = fileFinder;
@@ -17,8 +18,14 @@ namespace Neutrino.Data {
         public async Task<byte[]> ReadHeaderAsync(string id) {
             var path = _fileFinder.GetDataSetPath(id);
             var header = new byte[HeaderSize];
+            int read;
+            //TODO: Read the docs: could ReadAsync return lass than requested?
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read)) {
-                await fs.ReadAsync(header, 0, HeaderSize);
+                read = await fs.ReadAsync(header, 0, HeaderSize);
+            }
+            if (read != HeaderSize) {
+                await Try(() => File.Delete(id), 5, 100);
+                throw new HeaderCorruptedException(id);
             }
             return header;
         }
@@ -97,15 +104,27 @@ namespace Neutrino.Data {
 
         public async Task WriteRegistersAsync(TimeSerieHeader timeSerieHeader, List<Occurrence> occurrences) {
             var path = _fileFinder.GetDataSetPath(timeSerieHeader.Id);
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) {
-                long indexStart = GetIndexStart(occurrences[0].DateTime, timeSerieHeader);
-                fs.Seek(indexStart, SeekOrigin.Begin);
-                var bytes = new byte[occurrences.Count * RegisterSize];
-                for (int i = 0; i < occurrences.Count; i++) {
-                    decimal value = !occurrences[i].Value.HasValue ? Decimal.MinValue : occurrences[i].Value.Value;
-                    Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, i * RegisterSize, 16);
+            var indexStart = GetIndexStart(occurrences[0].DateTime, timeSerieHeader);
+            var bytes = new byte[occurrences.Count * RegisterSize];
+            for (int i = 0; i < occurrences.Count; i++) {
+                var value = !occurrences[i].Value.HasValue ? Decimal.MinValue : occurrences[i].Value.Value;
+                Buffer.BlockCopy(Decimal.GetBits(value), 0, bytes, i * RegisterSize, 16);
+            }
+            await Try(() => {
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) {
+                    fs.Seek(indexStart, SeekOrigin.Begin);
+                    fs.Write(bytes, 0, bytes.Length);
                 }
-                await fs.WriteAsync(bytes, 0, bytes.Length);
+            }, 5, 100);
+        }
+
+        public static async Task Try(Action action, int times, int delayInMillis) {
+            try {
+                action.Invoke();
+            }
+            catch (Exception ex) when (times > 0) {
+                await Task.Delay(delayInMillis);
+                await Try(action, --times, delayInMillis);
             }
         }
     }

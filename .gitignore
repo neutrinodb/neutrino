@@ -2,3 +2,5 @@ packages/
 */obj/
 */bin/
 *.nupkg
+tests/Neutrino.Sample.Cmd/datasets/
+tests/Neutrino.Sample.Cmd/project.lock.json
