@@ -19,8 +19,7 @@ namespace Neutrino.Data {
             var path = _fileFinder.GetDataSetPath(id);
             var header = new byte[HeaderSize];
             int read;
-            //TODO: Read the docs: could ReadAsync return lass than requested?
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read)) {
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, true)) {
                 read = await fs.ReadAsync(header, 0, HeaderSize);
             }
             if (read != HeaderSize) {
