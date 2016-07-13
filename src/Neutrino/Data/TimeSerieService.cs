@@ -5,82 +5,96 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Neutrino.Data {
-    public class TimeSerieService : ITimeSerieService {
+    public class TimeSerieService<T> : ITimeSerieService<T> {
         private IFileFinder _fileFinder;
+        private IFileStreamOpener _fileStreamOpener;
 
         public static TimeSerieHeader DefaultTimeSerie;
 
-        public TimeSerieService(IFileFinder fileFinder) {
+        public TimeSerieService(IFileFinder fileFinder, IFileStreamOpener fileStreamOpener) {
             _fileFinder = fileFinder;
+            _fileStreamOpener = fileStreamOpener;
         }
 
         public async Task<string> Create(TimeSerieHeader timeSerieHeader) {
             var fullPath = _fileFinder.GetDataSetPath(timeSerieHeader.Id);
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-            var dataFile = new DataFile(_fileFinder);
-            await dataFile.CreateAsync(timeSerieHeader);
+            var header = timeSerieHeader.Serialize();
+
+            using (var fs = _fileStreamOpener.OpenForCreation(fullPath)) {
+                await fs.WriteAsync(header, 0, header.Length);
+                var body = SerializeEmptyTimeSerieBody(timeSerieHeader);
+                await fs.WriteAsync(body, 0, body.Length);
+            }
             return fullPath;
         }
 
-        public async Task<TimeSerie> List(string id, DateTime start, DateTime end) {
-            var dataFile = new DataFile(_fileFinder);
-            var headerBytes = await dataFile.ReadHeaderAsync(id);
-            var timeSerieHeader = DeserializeHeader(id, headerBytes);
-            long numberOfRegisters = CalcNumberOfRegisters(start, end, timeSerieHeader.IntervalInMillis);
-            return await dataFile.ReadRegistersAsync(timeSerieHeader, start, numberOfRegisters);
+        private byte[] SerializeEmptyTimeSerieBody(TimeSerieHeader timeSerieHeader) {
+            //var kind = timeSerieHeader.OcurrenceType;
+            //using (var ms = new MemoryStream()) {
+            //    using (var bw = new BinaryWriter(ms)) {
+            //        for (int i = 0; i < timeSerieHeader.TotalLength; i++) {
+            //            bw.Write(kind.GetInfo().DefaultValue);
+            //        }
+            //    }
+            //    return ms.ToArray();
+            //}
+            return null;
         }
 
-        private static TimeSerieHeader DeserializeHeader(string id, byte[] bytes) {
-            TimeSerieHeader ts;
-            using (var br = new BinaryReader(new MemoryStream(bytes))) {
-                var start = DateTime.FromBinary(br.ReadInt64());
-                var end = DateTime.FromBinary(br.ReadInt64());
-                var current = DateTime.FromBinary(br.ReadInt64());
-                var interval = br.ReadInt32();
-                var autoExtendStep = br.ReadInt32();
-                ts = new TimeSerieHeader(id, start, end, interval, autoExtendStep) {
-                    Current = current
-                };
-            }
-            return ts;
+        public async Task<TimeSerie<T>> List(string id, DateTime start, DateTime end) {
+            //var fullPath = _fileFinder.GetDataSetPath(id);
+            //var headerBytes = new byte[TimeSerieHeader.HEADER_SIZE];
+            //using (var fs = _fileStreamOpener.OpenWithoutLock(fullPath)) {
+            //    await fs.ReadAsync(headerBytes, 0, headerBytes.Length);
+            //    var header = TimeSerieHeaderDeserializer.Deserialize(id, headerBytes);
+            //    long numberOfRegisters = header.CalcNumberOfRegisters(start, end);
+            //    var bodyBytes = new byte[];
+            //    return await fs.ReadAsync()
+            //}
+
+            //var dataFile = new DataFile(_fileFinder);
+            //var headerBytes = await dataFile.ReadHeaderAsync(id);
+            //var timeSerieHeader = DeserializeHeader(id, headerBytes);
+            return null;
         }
 
         private static long CalcNumberOfRegisters(DateTime start, DateTime end, long intervalInMillis) {
-            return ((long) (end - start).TotalMilliseconds / intervalInMillis) + 1;
+            return ((long)(end - start).TotalMilliseconds / intervalInMillis) + 1;
         }
 
-        public async Task Add(string id, Occurrence occurrence) {
-            await Add(id, new List<Occurrence> { occurrence });
+        public async Task Add(string id, Occurrence<T> occurrence) {
+            await Add(id, new List<Occurrence<T>> { occurrence });
         }
 
-        public async Task Add(string id, List<Occurrence> occurrences) {
-            var dataFile = new DataFile(_fileFinder);
-            byte[] headerBytes;
-            try {
-                headerBytes = await dataFile.ReadHeaderAsync(id);
-            }
-            catch (Exception fex) when (DefaultTimeSerie != null) {
-                var header = new TimeSerieHeader(id, DefaultTimeSerie.Start, DefaultTimeSerie.End, DefaultTimeSerie.IntervalInMillis);
-                await Create(header);
-                headerBytes = await dataFile.ReadHeaderAsync(id);
-            }
-            var timeSerieHeader = DeserializeHeader(id, headerBytes);
+        public async Task Add(string id, List<Occurrence<T>> occurrences) {
+            //var dataFile = new DataFile(_fileFinder);
+            //byte[] headerBytes;
+            //try {
+            //    headerBytes = await dataFile.ReadHeaderAsync(id);
+            //}
+            //catch (Exception fex) when (DefaultTimeSerie != null) {
+            //    var header = new TimeSerieHeader(id, DefaultTimeSerie.Start, DefaultTimeSerie.End, DefaultTimeSerie.IntervalInMillis);
+            //    await Create(header);
+            //    headerBytes = await dataFile.ReadHeaderAsync(id);
+            //}
+            //var timeSerieHeader = DeserializeHeader(id, headerBytes);
 
-            var dateEnd = occurrences.Last().DateTime;
-            await EnsureDateRange(timeSerieHeader, dateEnd, dataFile);
-            await dataFile.WriteRegistersAsync(timeSerieHeader, occurrences);
+            //var dateEnd = occurrences.Last().DateTime;
+            //await EnsureDateRange(timeSerieHeader, dateEnd, dataFile);
+            //await dataFile.WriteRegistersAsync(timeSerieHeader, occurrences);
         }
 
-        private static async Task EnsureDateRange(TimeSerieHeader timeSerieHeader, DateTime dateEnd, DataFile dataFile) {
-            if (dateEnd <= timeSerieHeader.End) {
-                return;
-            }
-            var extendLimit = timeSerieHeader.IntervalInMillis * timeSerieHeader.AutoExtendStep;
-            var maxDateAllowed = timeSerieHeader.End.Add(TimeSpan.FromMilliseconds(extendLimit));
-            if (dateEnd > maxDateAllowed) {
-                throw new DateAfterLimitException(timeSerieHeader, dateEnd);
-            }
-            await dataFile.ExtendFileAsync(timeSerieHeader, dateEnd);
-        }
+        //private static async Task EnsureDateRange(TimeSerieHeader timeSerieHeader, DateTime dateEnd, DataFile dataFile) {
+        //    if (dateEnd <= timeSerieHeader.End) {
+        //        return;
+        //    }
+        //    var extendLimit = timeSerieHeader.IntervalInMillis * timeSerieHeader.AutoExtendStep;
+        //    var maxDateAllowed = timeSerieHeader.End.Add(TimeSpan.FromMilliseconds(extendLimit));
+        //    if (dateEnd > maxDateAllowed) {
+        //        throw new DateAfterLimitException(timeSerieHeader, dateEnd);
+        //    }
+        //    await dataFile.ExtendFileAsync(timeSerieHeader, dateEnd);
+        //}
     }
 }

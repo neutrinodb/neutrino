@@ -4,3 +4,11 @@ packages/
 *.nupkg
 tests/Neutrino.Sample.Cmd/datasets/
 tests/Neutrino.Sample.Cmd/project.lock.json
+tests/Neutrino.Sample.Cmd/bin/
+tests/Neutrino.Sample.Cmd/obj/
+src/Neutrino/obj/
+tests/Neutrino.Tests/bin/
+tests/Neutrino.Tests/obj/
+src/Neutrino.Api/obj/
+src/Neutrino.Api/bin/
+src/Neutrino/bin/

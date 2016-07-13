@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using Neutrino.Data;
+﻿using Neutrino.Data;
+using NUnit.Framework;
 
 namespace Neutrino.Tests.Core {
     public class FileFinderTests {

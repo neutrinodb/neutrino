@@ -1,14 +1,14 @@
 ﻿using System.Threading.Tasks;
-using Neutrino.Data;
-using Microsoft.AspNet.Mvc;
+using Neutrino;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Neutrino.Api {
+namespace Neutrino.Api.Controllers {
     [Route("api/[controller]")]
 
     public class TimeSeriesController {
-        private ITimeSerieService _service;
+        private ITimeSerieHeaderService _service;
 
-        public TimeSeriesController(ITimeSerieService service) {
+        public TimeSeriesController(ITimeSerieHeaderService service) {
             _service = service;
         }
 
@@ -16,5 +16,4 @@ namespace Neutrino.Api {
             return await _service.Create(timeSerieHeader);
         }
     }
-
 }

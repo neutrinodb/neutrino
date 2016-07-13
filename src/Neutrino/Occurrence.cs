@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Neutrino {
-    public class Occurrence : IEquatable<Occurrence> {
+    public abstract class Occurrence<T> : IEquatable<Occurrence<T>> {
 
         public DateTime DateTime { get; set; }
-        public decimal? Value { get; set; }
+        public T Value { get; set; }
 
-        public Occurrence() {
-            
-        }
-
-        public Occurrence(DateTime dateTime, decimal? value) {
+        protected Occurrence(DateTime dateTime, T value) {
             DateTime = dateTime;
             Value = value;
         }
-        
-        public bool Equals(Occurrence other) {
-            return other.DateTime == DateTime && other.Value == Value;
+
+        //public abstract void WriteValueToStream(StreamWriter stream);
+
+        public bool Equals(Occurrence<T> other) {
+            return (other.DateTime == DateTime) && 
+                EqualityComparer<T>.Default.Equals(Value, other.Value);
         }
     }
 }

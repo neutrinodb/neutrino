@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}"
 EndProject
@@ -14,13 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F7849C6-DC8
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino", "src\Neutrino\Neutrino.xproj", "{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Server", "src\Neutrino.Server\Neutrino.Server.xproj", "{41C75F0F-590D-4BEC-BC40-0CE988BF1918}"
-EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Sample.Cmd", "tests\Neutrino.Sample.Cmd\Neutrino.Sample.Cmd.xproj", "{7AD906D7-515B-4354-9CDE-357F64D9B411}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Tests", "tests\Neutrino.Tests\Neutrino.Tests.xproj", "{29C0D540-27D9-469A-BD37-B2F08F774F54}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Tests", "Tests\Neutrino.Tests\Neutrino.Tests.xproj", "{A14B0DAE-0E4A-4AC3-B85F-C1D56929B0ED}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Tests.Integration", "tests\Neutrino.Tests.Integration\Neutrino.Tests.Integration.xproj", "{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Api", "src\Neutrino.Api\Neutrino.Api.xproj", "{5A58C562-393D-4C99-B945-F6E6EAC5B702}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,31 +30,26 @@ Global
 		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41C75F0F-590D-4BEC-BC40-0CE988BF1918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41C75F0F-590D-4BEC-BC40-0CE988BF1918}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{41C75F0F-590D-4BEC-BC40-0CE988BF1918}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41C75F0F-590D-4BEC-BC40-0CE988BF1918}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7AD906D7-515B-4354-9CDE-357F64D9B411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7AD906D7-515B-4354-9CDE-357F64D9B411}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AD906D7-515B-4354-9CDE-357F64D9B411}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AD906D7-515B-4354-9CDE-357F64D9B411}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29C0D540-27D9-469A-BD37-B2F08F774F54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29C0D540-27D9-469A-BD37-B2F08F774F54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29C0D540-27D9-469A-BD37-B2F08F774F54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29C0D540-27D9-469A-BD37-B2F08F774F54}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A14B0DAE-0E4A-4AC3-B85F-C1D56929B0ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A14B0DAE-0E4A-4AC3-B85F-C1D56929B0ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A14B0DAE-0E4A-4AC3-B85F-C1D56929B0ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A14B0DAE-0E4A-4AC3-B85F-C1D56929B0ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A58C562-393D-4C99-B945-F6E6EAC5B702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A58C562-393D-4C99-B945-F6E6EAC5B702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A58C562-393D-4C99-B945-F6E6EAC5B702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A58C562-393D-4C99-B945-F6E6EAC5B702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{850FE3A5-ADB6-4488-AB95-50587CD4CDFE} = {0F7849C6-DC80-4F04-B8BF-11A88D837C9F}
-		{41C75F0F-590D-4BEC-BC40-0CE988BF1918} = {0F7849C6-DC80-4F04-B8BF-11A88D837C9F}
 		{7AD906D7-515B-4354-9CDE-357F64D9B411} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
-		{29C0D540-27D9-469A-BD37-B2F08F774F54} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
-		{4DADA7CA-94CE-44A9-9124-31F3EEFDADE7} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
+		{A14B0DAE-0E4A-4AC3-B85F-C1D56929B0ED} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
+		{5A58C562-393D-4C99-B945-F6E6EAC5B702} = {0F7849C6-DC80-4F04-B8BF-11A88D837C9F}
 	EndGlobalSection
 EndGlobal
