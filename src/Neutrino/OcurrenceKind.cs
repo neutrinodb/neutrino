@@ -29,14 +29,26 @@ namespace Neutrino {
         public static void WriteToStream(this OccurrenceKind occurrenceKind, BinaryWriter writer, object value) {
             switch (occurrenceKind) {
                 case OccurrenceKind.Decimal:
-                    var vDecimal = (decimal?) value;
-                    var vDecimalValue = vDecimal ?? Decimal.MinValue;
-                    writer.Write(vDecimalValue);
+                    if (value == null) {
+                        writer.Write(Decimal.MinValue);
+                    }
+                    else if (value is decimal) {
+                        writer.Write((decimal) value);
+                    }
+                    else {
+                        writer.Write(Convert.ToDecimal(value));
+                    }
                     return;
                 case OccurrenceKind.Double:
-                    var vDouble = (double?) value;
-                    var vDoubleValue = vDouble ?? Double.NaN;
-                    writer.Write(vDoubleValue);
+                    if (value == null) {
+                        writer.Write(Double.NaN);
+                    }
+                    else if (value is double) {
+                        writer.Write((double)value);
+                    }
+                    else {
+                        writer.Write(Convert.ToDouble(value));
+                    }
                     return;
             }
             throw new ArgumentException(occurrenceKind + " is not supported", nameof(occurrenceKind));

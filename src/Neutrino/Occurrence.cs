@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Neutrino {
-    public class Occurrence : IEquatable<Occurrence> {
+    public class Occurrence {
 
         public DateTime DateTime { get; set; }
         public object Value { get; set; }
@@ -11,8 +11,20 @@ namespace Neutrino {
             Value = value;
         }
 
-        public bool Equals(Occurrence other) {
-            return (other.DateTime == DateTime) && other.Value == Value;
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 17;
+                hash *= 23 + DateTime.GetHashCode();
+                hash *= 23 + Value.GetHashCode();
+                return hash;
+            }
+        }
+
+        public override bool Equals(object obj) {
+            if (!(obj is Occurrence)) {
+                return false;
+            }
+            return GetHashCode() == obj.GetHashCode();
         }
     }
 }

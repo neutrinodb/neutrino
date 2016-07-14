@@ -13,8 +13,6 @@ namespace Neutrino {
         public long TotalLength => GetIndex(End) + 1;
 
         public const int HEADER_SIZE = sizeof(byte) + (sizeof(Int32) * 2) + (sizeof(Int64)*3);
-        public const int REGISTER_SIZE = sizeof(decimal);
-
         public TimeSerieHeader(string id, DateTime start, DateTime end, int intervalInMillis, OccurrenceKind ocurrenceType = OccurrenceKind.Decimal, int autoExtendStep = -1) {
             Id = id;
             OcurrenceType = ocurrenceType;
