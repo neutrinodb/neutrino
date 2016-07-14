@@ -8,34 +8,36 @@ using Neutrino.Data;
 namespace Neutrino.Api {
 
     [Route("api/[controller]")]
-    public class OcurrencesController<T>  {
-        private ITimeSerieService<T> _service;
-        private ITimeSerieHeaderService _timeSerieHeaderService;
+    public class OcurrencesController  {
+        //private ITimeSerieService<object> _service;
+        //private ITimeSerieHeaderService _timeSerieHeaderService;
 
-        public OcurrencesController(ITimeSerieHeaderService timeSerieHeaderService, ITimeSerieService<T> service) {
-            _timeSerieHeaderService = timeSerieHeaderService;
-            _service = service;
-        }
+        //public OcurrencesController(ITimeSerieHeaderService timeSerieHeaderService, ITimeSerieService<object> service) {
+        //    _timeSerieHeaderService = timeSerieHeaderService;
+        //    _service = service;
+        //}
 
-        [HttpGet]
-        public async Task<TimeSerie<T>> Get(string id, DateTime start, DateTime end) {
-            return await _service.List(id, start, end);
-        }
+        //[HttpGet]
+        //public async Task<string> Get(string id, DateTime start, DateTime end) {
+        //    var header = await _timeSerieHeaderService.Get(id);
 
-        [HttpPost]
-        [Route("{*id}")]
-        public async Task Post(string id, [FromBody] string ocurrences) {
-            var header = await _timeSerieHeaderService.Get(id);
-            switch(header.OcurrenceType) {
-                case OcurrenceKind.Decimal:
+        //    return await _service.List(id, start, end);
+        //}
 
-            }
+        //[HttpPost]
+        //[Route("{*id}")]
+        //public async Task Post(string id, [FromBody] string ocurrences) {
+        //    var header = await _timeSerieHeaderService.Get(id);
+        //    switch(header.OcurrenceType) {
+        //        case OcurrenceKind.Decimal:
 
-            await _service.Add(id, ocurrences);
-        }
+        //    }
 
-        private ITimeSerieService<T> GetService(OcurrenceKind ocurrenceKind) {
-            
-        }
+        //    await _service.Add(id, ocurrences);
+        //}
+
+        //private ITimeSerieService<object> GetService(OcurrenceKind ocurrenceKind) {
+        //    return new TimeSerieService<decimal>(new FileFinder(""), new FileStreamOpener());
+        //}
     }
 }

@@ -12,3 +12,7 @@ tests/Neutrino.Tests/obj/
 src/Neutrino.Api/obj/
 src/Neutrino.Api/bin/
 src/Neutrino/bin/
+.vs/
+tests/Neutrino.Tests.Integration/obj/
+tests/Neutrino.Tests.Integration/bin/
+src/artifacts/

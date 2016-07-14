@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Neutrino;
 
 namespace Neutrino.Api.Controllers {
     [Route("api/[controller]")]
@@ -14,8 +15,13 @@ namespace Neutrino.Api.Controllers {
         }
 
         [HttpGet("{id}")]
-        public string Get(string id) {
-            return "int " + id;
+        public List<object> Get(string id) {
+
+            var list = new List<object>();
+            list.Add(new Occurrence(DateTime.Today, 10.1m));
+            list.Add(new Occurrence(DateTime.Today, 11.0m));
+            list.Add(new Occurrence(DateTime.Today, 12.0m));
+            return list;
         }
 
         //[HttpGet("{id}")]

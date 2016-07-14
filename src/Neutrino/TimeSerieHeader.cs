@@ -4,7 +4,7 @@ using System.IO;
 namespace Neutrino {
     public class TimeSerieHeader {
         public string Id { get; private set; }
-        public OcurrenceKind OcurrenceType { get; }
+        public OccurrenceKind OcurrenceType { get; }
         public DateTime Start { get; }
         public DateTime End { get; }
         public DateTime Current { get; set; }
@@ -12,9 +12,10 @@ namespace Neutrino {
         public int AutoExtendStep { get; }
         public long TotalLength => GetIndex(End) + 1;
 
-        public const int HEADER_SIZE = (sizeof(Int32) * 3) + (sizeof(Int64)*4);
+        public const int HEADER_SIZE = sizeof(byte) + (sizeof(Int32) * 2) + (sizeof(Int64)*3);
+        public const int REGISTER_SIZE = sizeof(decimal);
 
-        public TimeSerieHeader(string id, OcurrenceKind ocurrenceType, DateTime start, DateTime end, int intervalInMillis, int autoExtendStep = -1) {
+        public TimeSerieHeader(string id, DateTime start, DateTime end, int intervalInMillis, OccurrenceKind ocurrenceType = OccurrenceKind.Decimal, int autoExtendStep = -1) {
             Id = id;
             OcurrenceType = ocurrenceType;
             Start = start;
@@ -54,13 +55,13 @@ namespace Neutrino {
         public static TimeSerieHeader Deserialize(string id, Stream stream) {
             TimeSerieHeader ts;
             using (var br = new BinaryReader(stream)) {
-                var ocurrenceType = (OcurrenceKind)br.Read();
+                var ocurrenceType = (OccurrenceKind)br.Read();
                 var start = DateTime.FromBinary(br.ReadInt64());
                 var end = DateTime.FromBinary(br.ReadInt64());
                 var current = DateTime.FromBinary(br.ReadInt64());
                 var interval = br.ReadInt32();
                 var autoExtendStep = br.ReadInt32();
-                ts = new TimeSerieHeader(id, ocurrenceType, start, end, interval, autoExtendStep) {
+                ts = new TimeSerieHeader(id, start, end, interval, ocurrenceType, autoExtendStep) {
                     Current = current
                 };
             }
