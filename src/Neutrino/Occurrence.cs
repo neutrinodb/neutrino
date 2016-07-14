@@ -12,7 +12,7 @@ namespace Neutrino {
         }
 
         public override int GetHashCode() {
-            var value = Value == null ? 0 : Value.GetHashCode();
+            var value = Value?.GetHashCode() ?? 0;
             unchecked {
                 var hash = 17;
                 hash *= 23 + DateTime.GetHashCode();

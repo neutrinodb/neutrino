@@ -15,7 +15,7 @@ namespace Neutrino {
         public const int HEADER_SIZE = sizeof(byte) + (sizeof(Int32) * 2) + (sizeof(Int64)*3);
         public TimeSerieHeader(string id, DateTime start, DateTime end, int intervalInMillis, OccurrenceKind ocurrenceType = OccurrenceKind.Decimal, int autoExtendStep = -1) {
             Id = id;
-            OcurrenceType = ocurrenceType;
+            OcurrenceType = ocurrenceType == 0 ? OccurrenceKind.Decimal : ocurrenceType;
             Start = start;
             End = end;
             IntervalInMillis = intervalInMillis;
