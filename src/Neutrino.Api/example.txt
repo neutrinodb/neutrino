@@ -1,0 +1,15 @@
+﻿{
+  "Id": "/datafiles/eneatdel",
+  "Start": "2016-01-01T00:00:00",
+  "End": "2018-01-01T00:00:00",
+  "Current": "2016-01-01T00:00:00",
+  "IntervalInMillis": 300000,
+  "AutoExtendStep": 76320
+}
+
+//occurrence
+{
+  "DateTime": "2016-01-01T00:00:00",
+  "Value": 10.2
+}
+

@@ -9,7 +9,7 @@ namespace Neutrino.Data {
         private IFileFinder _fileFinder;
         private IFileStreamOpener _fileStreamOpener;
 
-        public static TimeSerieHeader DefaultTimeSerie;
+        public static TimeSerieHeader DefaultTimeSerieHeader;
 
         public TimeSerieService(IFileFinder fileFinder, IFileStreamOpener fileStreamOpener) {
             _fileFinder = fileFinder;
@@ -84,25 +84,39 @@ namespace Neutrino.Data {
             var fullPath = _fileFinder.GetDataSetPath(id);
             var headerBytes = new byte[TimeSerieHeader.HEADER_SIZE];
             var lastDate = occurrences.Last().DateTime;
-            using (var fs = _fileStreamOpener.OpenWithLock(fullPath)) {
-                await fs.ReadAsync(headerBytes, 0, headerBytes.Length);
-                var header = TimeSerieHeader.Deserialize(id, headerBytes);
+            try {
+                using (var fs = _fileStreamOpener.OpenWithLock(fullPath)) {
+                    await fs.ReadAsync(headerBytes, 0, headerBytes.Length);
+                    var header = TimeSerieHeader.Deserialize(id, headerBytes);
 
-                var type = header.OcurrenceType;
-                using (var bw = new BinaryWriter(fs)) {
-                    EnsureDateRange(bw, header, lastDate);
-                    fs.Seek(TimeSerieHeader.HEADER_SIZE + (header.GetIndex(occurrences[0].DateTime) * type.GetBinarySize()), SeekOrigin.Begin);
+                    var type = header.OcurrenceType;
+                    using (var bw = new BinaryWriter(fs)) {
+                        EnsureDateRange(bw, header, lastDate);
+                        fs.Seek(
+                            TimeSerieHeader.HEADER_SIZE +
+                            (header.GetIndex(occurrences[0].DateTime)*type.GetBinarySize()), SeekOrigin.Begin);
 
-                    for (int i = 0; i < occurrences.Count; i++) {
-                        type.WriteToStream(bw, occurrences[i].Value);
+                        for (int i = 0; i < occurrences.Count; i++) {
+                            type.WriteToStream(bw, occurrences[i].Value);
+                        }
+                        if (header.Current < lastDate) {
+                            header.Current = lastDate;
+                        }
+                        fs.Seek(0, SeekOrigin.Begin);
+                        var headerInBytes = header.Serialize();
+                        await fs.WriteAsync(headerInBytes, 0, headerInBytes.Length);
                     }
-                    if (header.Current < lastDate) {
-                        header.Current = lastDate;
-                    }
-                    fs.Seek(0, SeekOrigin.Begin);
-                    var headerInBytes = header.Serialize();
-                    await fs.WriteAsync(headerInBytes, 0, headerInBytes.Length);
                 }
+            }
+            catch (FileNotFoundException) when (DefaultTimeSerieHeader != null) {
+                var header = new TimeSerieHeader(id, 
+                                                 DefaultTimeSerieHeader.Start, 
+                                                 DefaultTimeSerieHeader.End, 
+                                                 DefaultTimeSerieHeader.IntervalInMillis, 
+                                                 DefaultTimeSerieHeader.OcurrenceType, 
+                                                 DefaultTimeSerieHeader.AutoExtendStep);
+                await Create(header);
+                await Save(id, occurrences);
             }
         }
 

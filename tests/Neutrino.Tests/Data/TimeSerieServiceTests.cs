@@ -69,6 +69,24 @@ namespace Neutrino.Tests.Data {
         }
 
         [Test]
+        public async Task Should_autocreate_datafile_when_default_is_configured() {
+            TimeSerieService.DefaultTimeSerieHeader = _header;
+            var fileSize = TimeSerieHeader.HEADER_SIZE + _header.OcurrenceType.GetBinarySize() * _header.TotalLength;
+            var occ = new Occurrence(Yesterday.AddHours(2), 10);
+            await _service.Save(_header.Id, occ);
+            Assert.AreEqual(fileSize, _streamOpener.GetStreamInfo(_header.Id).StreamAfterDispose.Length);
+
+            var seek = TimeSerieHeader.HEADER_SIZE + _header.OcurrenceType.GetBinarySize() * 2;
+            var bytes = _streamOpener.GetStreamInfo(_header.Id).StreamAfterDispose;
+            using (var mem = new MemoryStream(bytes)) {
+                mem.Seek(seek, SeekOrigin.Begin);
+                using (var sr = new BinaryReader(mem)) {
+                    Assert.AreEqual(10m, sr.ReadDecimal());
+                }
+            }
+        }
+
+        [Test]
         public async Task Should_list_occurrences() {
             await _service.Create(_header);
             var date = Yesterday;

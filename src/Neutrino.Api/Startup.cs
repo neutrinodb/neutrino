@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Neutrino.Data;
 
 namespace Neutrino.Api {
     public class Startup {
@@ -23,7 +24,7 @@ namespace Neutrino.Api {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            //services.AddTransient<ITimeSerieService<Decimal>>(s => new TimeSerieService<Decimal>(new FileFinder("DataSets"), new FileStreamOpener()));
+            services.AddTransient<ITimeSerieService>(s => new TimeSerieService(new FileFinder("DataSets"), new FileStreamOpener()));
             services.AddMvc();
         }
 

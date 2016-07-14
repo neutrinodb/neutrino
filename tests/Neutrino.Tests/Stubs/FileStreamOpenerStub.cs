@@ -7,6 +7,9 @@ namespace Neutrino.Tests.Stubs {
         private Dictionary<string, StubStream> _streamsInfo { get; } = new Dictionary<string, StubStream>();
 
         public Stream OpenWithoutLock(string path) {
+            if (!_streamsInfo.ContainsKey(path)) {
+                throw new FileNotFoundException(path);
+            }
             var bytes = _streamsInfo[path].StreamAfterDispose;
             _streamsInfo[path] = new StubStream();
             _streamsInfo[path].Write(bytes, 0, bytes.Length);
@@ -15,6 +18,9 @@ namespace Neutrino.Tests.Stubs {
         }
 
         public Stream OpenWithLock(string path) {
+            if (!_streamsInfo.ContainsKey(path)) {
+                throw new FileNotFoundException(path);
+            }
             var bytes = _streamsInfo[path].StreamAfterDispose;
             _streamsInfo[path] = new StubStream();
             _streamsInfo[path].Write(bytes, 0, bytes.Length);
