@@ -33,7 +33,7 @@ namespace Neutrino {
         }
 
         public long CalcNumberOfRegisters(DateTime start, DateTime end) {
-            return (long)(end - start).TotalMilliseconds / IntervalInMillis + 1;
+            return (long)((end - start).TotalMilliseconds / IntervalInMillis) + 1;
         }
 
         public byte[] Serialize() {

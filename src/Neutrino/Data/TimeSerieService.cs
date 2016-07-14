@@ -49,6 +49,10 @@ namespace Neutrino.Data {
             using (var fs = _fileStreamOpener.OpenWithoutLock(fullPath)) {
                 await fs.ReadAsync(headerBytes, 0, headerBytes.Length);
                 header = TimeSerieHeader.Deserialize(id, headerBytes);
+
+                if (end > header.End) {
+                    end = header.End;
+                }
                 numberOfRegisters = header.CalcNumberOfRegisters(start, end);
                 var registerSize = header.OcurrenceType.GetBinarySize();
                 bodyBytes = new byte[numberOfRegisters * registerSize];
@@ -80,11 +84,9 @@ namespace Neutrino.Data {
             var fullPath = _fileFinder.GetDataSetPath(id);
             var headerBytes = new byte[TimeSerieHeader.HEADER_SIZE];
             var lastDate = occurrences.Last().DateTime;
-            Console.WriteLine("lastdate -> " +lastDate);
             using (var fs = _fileStreamOpener.OpenWithLock(fullPath)) {
                 await fs.ReadAsync(headerBytes, 0, headerBytes.Length);
                 var header = TimeSerieHeader.Deserialize(id, headerBytes);
-                Console.WriteLine("header -> " + header.End);
 
                 var type = header.OcurrenceType;
                 using (var bw = new BinaryWriter(fs)) {
