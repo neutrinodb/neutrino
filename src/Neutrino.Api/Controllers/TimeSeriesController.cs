@@ -6,14 +6,14 @@ namespace Neutrino.Api.Controllers {
     [Route("api/[controller]")]
 
     public class TimeSeriesController {
-        //private ITimeSerieHeaderService _service;
+        private ITimeSerieService _service;
 
-        //public TimeSeriesController(ITimeSerieHeaderService service) {
-        //    _service = service;
-        //}
+        public TimeSeriesController(ITimeSerieService service) {
+            _service = service;
+        }
 
-        //public async Task<string> Put([FromBody]TimeSerieHeader timeSerieHeader) {
-        //    return await _service.Create(timeSerieHeader);
-        //}
+        public async Task<string> Put([FromBody]TimeSerieHeader timeSerieHeader) {
+            return await _service.Create(timeSerieHeader);
+        }
     }
 }

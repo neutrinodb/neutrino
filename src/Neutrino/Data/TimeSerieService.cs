@@ -1,5 +1,4 @@
-﻿using Neutrino;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -73,38 +72,59 @@ namespace Neutrino.Data {
             return new TimeSerie(header.IntervalInMillis, list);
         }
       
-        public async Task Add(string id, Occurrence occurrence) {
-            await Add(id, new List<Occurrence> { occurrence });
+        public async Task Save(string id, Occurrence occurrence) {
+            await Save(id, new List<Occurrence> { occurrence });
         }
 
-        public async Task Add(string id, List<Occurrence> occurrences) {
-            //var dataFile = new DataFile(_fileFinder);
-            //byte[] headerBytes;
-            //try {
-            //    headerBytes = await dataFile.ReadHeaderAsync(id);
-            //}
-            //catch (Exception fex) when (DefaultTimeSerie != null) {
-            //    var header = new TimeSerieHeader(id, DefaultTimeSerie.Start, DefaultTimeSerie.End, DefaultTimeSerie.IntervalInMillis);
-            //    await Create(header);
-            //    headerBytes = await dataFile.ReadHeaderAsync(id);
-            //}
-            //var timeSerieHeader = DeserializeHeader(id, headerBytes);
+        public async Task Save(string id, List<Occurrence> occurrences) {
+            var fullPath = _fileFinder.GetDataSetPath(id);
+            var headerBytes = new byte[TimeSerieHeader.HEADER_SIZE];
+            var lastDate = occurrences.Last().DateTime;
+            using (var fs = _fileStreamOpener.OpenWithLock(fullPath)) {
+                await fs.ReadAsync(headerBytes, 0, headerBytes.Length);
+                var header = TimeSerieHeader.Deserialize(id, headerBytes);
+                
+                var type = header.OcurrenceType;
+                using (var bw = new BinaryWriter(fs)) {
+                    EnsureDateRange(bw, header, lastDate);
 
-            //var dateEnd = occurrences.Last().DateTime;
-            //await EnsureDateRange(timeSerieHeader, dateEnd, dataFile);
-            //await dataFile.WriteRegistersAsync(timeSerieHeader, occurrences);
+                    fs.Seek(TimeSerieHeader.HEADER_SIZE + (header.GetIndex(occurrences[0].DateTime) * type.GetBinarySize()), SeekOrigin.Begin);
+                    for (int i = 0; i < occurrences.Count; i++) {
+                        type.WriteToStream(bw, occurrences[i].Value);
+                    }
+                    if (header.Current < lastDate) {
+                        header.Current = lastDate;
+                    }
+                    fs.Seek(0, SeekOrigin.Begin);
+                    var headerInBytes = header.Serialize();
+                    await fs.WriteAsync(headerInBytes, 0, headerInBytes.Length);
+                }
+            }
         }
 
-        //private static async Task EnsureDateRange(TimeSerieHeader timeSerieHeader, DateTime dateEnd, DataFile dataFile) {
-        //    if (dateEnd <= timeSerieHeader.End) {
-        //        return;
-        //    }
-        //    var extendLimit = timeSerieHeader.IntervalInMillis * timeSerieHeader.AutoExtendStep;
-        //    var maxDateAllowed = timeSerieHeader.End.Add(TimeSpan.FromMilliseconds(extendLimit));
-        //    if (dateEnd > maxDateAllowed) {
-        //        throw new DateAfterLimitException(timeSerieHeader, dateEnd);
-        //    }
-        //    await dataFile.ExtendFileAsync(timeSerieHeader, dateEnd);
-        //}
+        private static void EnsureDateRange(BinaryWriter bw, TimeSerieHeader timeSerieHeader, DateTime dateEnd) {
+            if (dateEnd <= timeSerieHeader.End) {
+                return;
+            }
+            var extendLimit = timeSerieHeader.IntervalInMillis * timeSerieHeader.AutoExtendStep;
+            var maxDateAllowed = timeSerieHeader.End.Add(TimeSpan.FromMilliseconds(extendLimit));
+            if (dateEnd > maxDateAllowed) {
+                throw new DateAfterLimitException(timeSerieHeader, dateEnd);
+            }
+            ExtendFile(bw, timeSerieHeader);
+        }
+
+        private static void ExtendFile(BinaryWriter writer, TimeSerieHeader timeSerieHeader) {
+            var nextDate = timeSerieHeader.End.Add(TimeSpan.FromMilliseconds(timeSerieHeader.IntervalInMillis));
+            var list = new List<Occurrence>(timeSerieHeader.AutoExtendStep);
+            for (int i = 0; i < timeSerieHeader.AutoExtendStep; i++) {
+                list.Add(new Occurrence(nextDate.AddMilliseconds(timeSerieHeader.IntervalInMillis * i), null));
+            }
+            writer.Seek(0, SeekOrigin.End);
+            for (int i = 0; i < list.Count; i++) {
+                timeSerieHeader.OcurrenceType.WriteToStream(writer, list[i].Value);
+            }
+            timeSerieHeader.End = list.Last().DateTime;
+        }
     }
 }

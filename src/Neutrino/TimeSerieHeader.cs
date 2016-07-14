@@ -6,7 +6,7 @@ namespace Neutrino {
         public string Id { get; private set; }
         public OccurrenceKind OcurrenceType { get; }
         public DateTime Start { get; }
-        public DateTime End { get; }
+        public DateTime End { get; set; }
         public DateTime Current { get; set; }
         public int IntervalInMillis { get; }
         public int AutoExtendStep { get; }

@@ -9,7 +9,6 @@ namespace Neutrino {
     }
 
     public static class OccurrenceKindExt {
-
         
         public static object ReadFromStream(this OccurrenceKind occurrenceKind, BinaryReader reader) {
             switch (occurrenceKind) {
@@ -24,16 +23,25 @@ namespace Neutrino {
         }
 
         public static void WriteDefaultToStream(this OccurrenceKind occurrenceKind, BinaryWriter writer) {
+            WriteToStream(occurrenceKind, writer, null);
+        }
+
+        public static void WriteToStream(this OccurrenceKind occurrenceKind, BinaryWriter writer, object value) {
             switch (occurrenceKind) {
                 case OccurrenceKind.Decimal:
-                    writer.Write(decimal.MinValue);
+                    var vDecimal = (decimal?) value;
+                    var vDecimalValue = vDecimal ?? Decimal.MinValue;
+                    writer.Write(vDecimalValue);
                     return;
                 case OccurrenceKind.Double:
-                    writer.Write(double.NaN);
+                    var vDouble = (double?) value;
+                    var vDoubleValue = vDouble ?? Double.NaN;
+                    writer.Write(vDoubleValue);
                     return;
             }
             throw new ArgumentException(occurrenceKind + " is not supported", nameof(occurrenceKind));
         }
+
 
         public static int GetBinarySize(this OccurrenceKind occurrenceKind) {
             switch (occurrenceKind) {

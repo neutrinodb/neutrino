@@ -35,10 +35,10 @@ namespace Neutrino.Sample.Cmd {
             ////populating
             //for (int i = 0; i < series; i++) {
             //    sw.Restart();
-            //    service.Add($"/med/{i}/teste.ts", items).Wait();
-            //    Console.WriteLine($"Add -> {items.Count} registers in {sw.Elapsed.TotalMilliseconds}");
+            //    service.Save($"/med/{i}/teste.ts", items).Wait();
+            //    Console.WriteLine($"Save -> {items.Count} registers in {sw.Elapsed.TotalMilliseconds}");
             //}
-            //Console.WriteLine($"Total Add -> {items.Count * series} registers in {swTotal.Elapsed.TotalMilliseconds}");
+            //Console.WriteLine($"Total Save -> {items.Count * series} registers in {swTotal.Elapsed.TotalMilliseconds}");
             
             //while (true) {
             //    Console.WriteLine("Query");
