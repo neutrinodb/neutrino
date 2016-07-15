@@ -17,7 +17,7 @@ tests/Neutrino.Tests.Integration/obj/
 tests/Neutrino.Tests.Integration/bin/
 src/artifacts/
 tests/Neutrino.Tests/TestResult.xml
-src/Neutrino.Api/
 src/Neutrino.Client/obj/Debug/
 tests/Neutrino.Client.Tests/obj/
 tests/Neutrino.Client.Tests/bin/
+src/Neutrino.Api/DataSets/
