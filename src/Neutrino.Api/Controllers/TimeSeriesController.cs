@@ -17,7 +17,9 @@ namespace Neutrino.Api.Controllers {
             return "Hello, fella. I'm the TimeSeries endpoint.";
         }
 
-        public async Task<string> Put([FromBody]TimeSerieHeader timeSerieHeader) {
+        [Route("{*id}")]
+        public async Task<string> Put(string id, [FromBody]TimeSerieHeader timeSerieHeader) {
+            timeSerieHeader.Id = id;
             return await _service.Create(timeSerieHeader);
         }
     }

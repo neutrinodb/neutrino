@@ -9,7 +9,7 @@
       "type": "platform",
       "version": "1.0.0"
     },
-    "Neutrino": "0.3.0-alpha"
+    "Neutrino.Client": "1.0.0-*"
   },
 
   "frameworks": {

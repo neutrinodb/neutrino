@@ -1,13 +1,39 @@
-﻿using Neutrino.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Neutrino.Client;
 
 namespace Neutrino.Sample.Cmd {
     public class Program {
         public static void Main(string[] args) {
+            try {
+                var client = new NeutrinoClient(new Uri("http://localhost:34177/", UriKind.Absolute));
+                Console.WriteLine("Start");
+
+                //var header = new TimeSerieHeader("id1", new DateTime(2016, 01, 01), new DateTime(2018, 01, 01), Interval.FiveMinutes, OccurrenceKind.Decimal, 100);
+                //client.CreateTimeSerieAsync(header).Wait();
+
+                var date = new DateTime(2016, 01, 01);
+                var list = new List<OccurrenceDecimal>();
+                for (int i = 0; i < 24; i++) {
+                    list.Add(new OccurrenceDecimal(date, i));
+                    date = date.AddMilliseconds(Interval.FiveMinutes);
+                }
+                client.SaveAsync("id1", list).Wait();
+
+                var ts = client.ListDecimalAsync("id1", new DateTime(2016, 01, 01), new DateTime(2016, 01, 02)).Result;
+                for (int i = 0; i < ts.Occurrences.Count; i++) {
+                    Console.WriteLine("-> " + ts.Occurrences[i].DateTime + " " + ts.Occurrences[i].Value);
+                }
+                Console.WriteLine("End");
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex);
+            }
+
+
             //var service = new TimeSerieService(new FileFinder("datasets"));
 
             //var start = new DateTime(2015, 1, 1);
@@ -16,7 +42,7 @@ namespace Neutrino.Sample.Cmd {
             //var series = 100;
             //var items = Enumerable.Range(0, size).Select(x => new Occurrence(start.AddMinutes(x * 5), x)).ToList();
 
-            
+
             //var cincoMinutos = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
 
             //TimeSerieService.DefaultTimeSerie = new TimeSerieHeader("", start, end, cincoMinutos);
@@ -39,7 +65,7 @@ namespace Neutrino.Sample.Cmd {
             //    Console.WriteLine($"Save -> {items.Count} registers in {sw.Elapsed.TotalMilliseconds}");
             //}
             //Console.WriteLine($"Total Save -> {items.Count * series} registers in {swTotal.Elapsed.TotalMilliseconds}");
-            
+
             //while (true) {
             //    Console.WriteLine("Query");
             //    Console.WriteLine("Initial date:");

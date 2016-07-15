@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Neutrino {
     public class TimeSerieHeader {
-        public string Id { get; private set; }
+        public string Id { get; set; }
         public OccurrenceKind OcurrenceType { get; }
         public DateTime Start { get; }
         public DateTime End { get; set; }
