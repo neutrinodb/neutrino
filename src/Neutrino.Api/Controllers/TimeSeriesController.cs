@@ -12,6 +12,11 @@ namespace Neutrino.Api.Controllers {
             _service = service;
         }
 
+        [HttpGet]
+        public string Get() {
+            return "Hello, fella. I'm the TimeSeries endpoint.";
+        }
+
         public async Task<string> Put([FromBody]TimeSerieHeader timeSerieHeader) {
             return await _service.Create(timeSerieHeader);
         }

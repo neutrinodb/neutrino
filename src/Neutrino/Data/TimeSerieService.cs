@@ -49,9 +49,8 @@ namespace Neutrino.Data {
             using (var fs = _fileStreamOpener.OpenWithoutLock(fullPath)) {
                 await fs.ReadAsync(headerBytes, 0, headerBytes.Length);
                 header = TimeSerieHeader.Deserialize(id, headerBytes);
-
-                if (end > header.End) {
-                    end = header.End;
+                if (end > header.Current) {
+                    end = header.Current;
                 }
                 numberOfRegisters = header.CalcNumberOfRegisters(start, end);
                 var registerSize = header.OcurrenceType.GetBinarySize();

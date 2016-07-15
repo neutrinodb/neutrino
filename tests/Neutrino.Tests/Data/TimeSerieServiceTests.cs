@@ -104,19 +104,21 @@ namespace Neutrino.Tests.Data {
         }
 
         [Test]
-        public async Task Should_list_occurrences_passing_end_of_file() {
+        public async Task Should_not_list_occurrences_after_pointer() {
             await _service.Create(_header);
-            var date = Yesterday;
-            var list = new List<Occurrence>();
-            for (int i = 0; i < 24; i++) {
-                list.Add(new Occurrence(date, (decimal?)i));
-                date = date.AddMilliseconds(_header.IntervalInMillis);
-            }
-            await _service.Save(_header.Id, list);
+
+            var occ = new Occurrence(Yesterday.AddMilliseconds(_header.IntervalInMillis), 10);
+            await _service.Save(_header.Id, occ);
 
             var result =
                 (await _service.List(_header.Id, Yesterday, Today)).Occurrences;
-            CollectionAssert.AreEqual(list, result);
+
+            Assert.AreEqual(2, result.Count);
+
+            Assert.AreEqual(Yesterday, result[0].DateTime);
+            Assert.IsNull(result[0].Value);
+            Assert.AreEqual(occ.DateTime, result[1].DateTime);
+            Assert.AreEqual(occ.Value, result[1].Value);
         }
     }
 }
