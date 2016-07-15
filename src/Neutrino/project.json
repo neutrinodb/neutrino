@@ -1,19 +1,16 @@
-﻿{
+{
   "version": "0.3.0-alpha",
   "description": "Neutrino Class Library",
   "authors": [ "Andre" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "System.Collections": "4.0.11"
+  },
+
   "frameworks": {
-    "dotnet5.4": {
-      "dependencies": {
-        "System.IO": "4.0.11-beta-23516",
-        "System.Linq": "4.0.1-beta-23516",
-        "System.IO.FileSystem": "4.0.1-beta-23516",
-        "System.Runtime": "4.0.21-beta-23516",
-        "System.Threading.Tasks": "4.0.11-beta-23516"
-      }
+    "netstandard1.6": {
+      "imports": "dnxcore50"
     }
   }
 }

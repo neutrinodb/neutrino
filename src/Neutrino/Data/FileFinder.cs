@@ -7,13 +7,15 @@ namespace Neutrino.Data {
         //Maximum number of files in a single folder: 4,294,967,295
         //to defrag file index: contig.exe
 
+        public static string FileSufix = ".ts1";
+
         public FileFinder(string basePath) {
             _basePath = basePath;
             Directory.CreateDirectory(_basePath);
         }
 
         public string GetDataSetPath(string id) {
-            id = id.Replace("/", "\\");
+            id = id.Replace("/", "\\") + FileSufix;
             if (Path.IsPathRooted(id)) {
                 id = id.Substring(1);
             }
