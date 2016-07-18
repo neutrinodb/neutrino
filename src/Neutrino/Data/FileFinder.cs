@@ -16,8 +16,13 @@ namespace Neutrino.Data {
 
         public string GetDataSetPath(string id) {
             id = id.Replace("/", "\\") + FileSufix;
-            if (Path.IsPathRooted(id)) {
-                id = id.Substring(1);
+            try {
+                if (Path.IsPathRooted(id)) {
+                    id = id.Substring(1);
+                }
+            }
+            catch (ArgumentException ex) {
+                throw new InvalidIdException(ex, id);
             }
             var fullPath = Path.Combine(_basePath, id);
             return fullPath;

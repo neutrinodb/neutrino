@@ -133,5 +133,18 @@ namespace Neutrino.Tests.Data {
             Assert.AreEqual(_header.OcurrenceType, h.OcurrenceType);
             Assert.AreEqual(_header.Start, h.Start);
         }
+
+        //[Test]
+        //public void Should_not_create_timserie_with_invalid_id() {
+        //    var list = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars());
+        //    var ex = Assert.Throws<AggregateException>(() => {
+        //        foreach (var c in list) {
+        //            _header.Id = "" + c;
+        //            var res = _service.Create(_header).Result;
+        //        }
+        //    }).InnerExceptions[0];
+        //    Assert.IsInstanceOf<InvalidIdException>(ex);
+
+        //}
     }
 }

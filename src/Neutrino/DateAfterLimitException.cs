@@ -1,5 +1,6 @@
 ﻿using System;
-namespace Neutrino.Data {
+
+namespace Neutrino {
     public class DateAfterLimitException : Exception {
         public TimeSerieHeader Header { get; set; }
         public DateTime OccurrenceDate { get; set; }
