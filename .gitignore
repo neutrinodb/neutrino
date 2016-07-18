@@ -21,3 +21,4 @@ src/Neutrino.Client/obj/Debug/
 tests/Neutrino.Client.Tests/obj/
 tests/Neutrino.Client.Tests/bin/
 src/Neutrino.Api/DataSets/
+src/Neutrino.Client/obj/

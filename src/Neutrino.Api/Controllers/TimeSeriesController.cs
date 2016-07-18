@@ -22,5 +22,11 @@ namespace Neutrino.Api.Controllers {
             timeSerieHeader.Id = id;
             return await _service.Create(timeSerieHeader);
         }
+
+        [HttpGet]
+        [Route("{*id}")]
+        public async Task<TimeSerieHeader> Get(string id) {
+            return await _service.Load(id);
+        }
     }
 }

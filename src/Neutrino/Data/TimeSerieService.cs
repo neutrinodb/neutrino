@@ -29,6 +29,15 @@ namespace Neutrino.Data {
             return fullPath;
         }
 
+        public async Task<TimeSerieHeader> Load(string id) {
+            var fullPath = _fileFinder.GetDataSetPath(id);
+            var headerBytes = new byte[TimeSerieHeader.HEADER_SIZE];
+            using (var fs = _fileStreamOpener.OpenWithoutLock(fullPath)) {
+                await fs.ReadAsync(headerBytes, 0, headerBytes.Length);
+                return TimeSerieHeader.Deserialize(id, headerBytes);
+            }
+        }
+
         private byte[] SerializeEmptyTimeSerieBody(TimeSerieHeader timeSerieHeader) {
             using (var ms = new MemoryStream()) {
                 using (var bw = new BinaryWriter(ms)) {
@@ -43,7 +52,7 @@ namespace Neutrino.Data {
         public async Task<TimeSerie> List(string id, DateTime start, DateTime end) {
             var fullPath = _fileFinder.GetDataSetPath(id);
             var headerBytes = new byte[TimeSerieHeader.HEADER_SIZE];
-            var bodyBytes = new byte[0];
+            byte[] bodyBytes;
             TimeSerieHeader header;
             long numberOfRegisters;
             using (var fs = _fileStreamOpener.OpenWithoutLock(fullPath)) {

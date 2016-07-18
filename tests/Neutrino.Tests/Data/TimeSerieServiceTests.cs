@@ -120,5 +120,18 @@ namespace Neutrino.Tests.Data {
             Assert.AreEqual(occ.DateTime, result[1].DateTime);
             Assert.AreEqual(occ.Value, result[1].Value);
         }
+        
+        [Test]
+        public async Task Should_return_timeserie_header() {
+            await _service.Create(_header);
+            var h = await _service.Load(_header.Id);
+            Assert.AreEqual(_header.Id, h.Id);
+            Assert.AreEqual(_header.AutoExtendStep, h.AutoExtendStep);
+            Assert.AreEqual(_header.Current, h.Current);
+            Assert.AreEqual(_header.End, h.End);
+            Assert.AreEqual(_header.IntervalInMillis, h.IntervalInMillis);
+            Assert.AreEqual(_header.OcurrenceType, h.OcurrenceType);
+            Assert.AreEqual(_header.Start, h.Start);
+        }
     }
 }

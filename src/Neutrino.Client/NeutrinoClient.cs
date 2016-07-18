@@ -24,12 +24,20 @@ namespace Neutrino.Client {
             await _client.PutAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
         }
 
+        public async Task<TimeSerieHeader> LoadTimeSerieAsync(string id) {
+            var url = UrlBuilderEx.StartWithBaseUri(_serverAddress)
+                                  .AddPath("api/TimeSeries")
+                                  .AddPath(id)
+                                  .Build();
+            var json = await _client.GetStringAsync(url);
+            return JsonConvert.DeserializeObject<TimeSerieHeader>(json);
+        }
+
         public async Task SaveAsync(string id, IEnumerable<OccurrenceDecimal> occurrences) {
             var url = UrlBuilderEx.StartWithBaseUri(_serverAddress)
                                   .AddPath("api/Occurrences")
                                   .AddPath(id)
                                   .Build();
-            Console.WriteLine(url);
             var json = JsonConvert.SerializeObject(occurrences);
             await _client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
         }
@@ -41,7 +49,6 @@ namespace Neutrino.Client {
                                   .AddQueryParameter("start", startInclusive.ToString("s"))
                                   .AddQueryParameter("end", endInclusive.ToString("s"))
                                   .Build();
-            Console.WriteLine(url);
             var json = await _client.GetStringAsync(url);
             return JsonConvert.DeserializeObject<TimeSerieDecimal>(json);
         }
