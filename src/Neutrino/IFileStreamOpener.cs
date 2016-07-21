@@ -5,5 +5,6 @@ namespace Neutrino {
         Stream OpenWithoutLock(string path);
         Stream OpenWithLock(string path);
         Stream OpenForCreation(string path);
+        bool FileExists(string path);
     }
 }

@@ -14,20 +14,20 @@ namespace Neutrino.Tests.Data {
 
         private TimeSerieService _service;
         private FileStreamOpenerStub _streamOpener;
-        private FileFinderStub _fileFinder;
+        private FileFinder _fileFinder;
         private TimeSerieHeader _header;
 
         [SetUp]
         public void SetUp() {
-            _fileFinder = new FileFinderStub();
-            _streamOpener = new FileStreamOpenerStub();
+            _fileFinder = new FileFinder("DataSet");
+            _streamOpener = new FileStreamOpenerStub(_fileFinder);
             _service = new TimeSerieService(_fileFinder, _streamOpener);
             _header = new TimeSerieHeader("t1", Yesterday, Yesterday.AddHours(23), OneHour, OccurrenceKind.Decimal, 24);
         }
 
         [Test]
         public async Task Should_create_file_with_correct_size() {
-            var fileSize = TimeSerieHeader.HEADER_SIZE + _header.OcurrenceType.GetBinarySize()*_header.TotalLength;
+            var fileSize = TimeSerieHeader.HEADER_SIZE + _header.OcurrenceType.GetBinarySize() * _header.TotalLength;
             await _service.Create(_header);
             Assert.AreEqual(fileSize, _streamOpener.GetStreamInfo(_header.Id).StreamAfterDispose.Length);
         }
@@ -120,7 +120,7 @@ namespace Neutrino.Tests.Data {
             Assert.AreEqual(occ.DateTime, result[1].DateTime);
             Assert.AreEqual(occ.Value, result[1].Value);
         }
-        
+
         [Test]
         public async Task Should_return_timeserie_header() {
             await _service.Create(_header);
@@ -134,17 +134,23 @@ namespace Neutrino.Tests.Data {
             Assert.AreEqual(_header.Start, h.Start);
         }
 
-        //[Test]
-        //public void Should_not_create_timserie_with_invalid_id() {
-        //    var list = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars());
-        //    var ex = Assert.Throws<AggregateException>(() => {
-        //        foreach (var c in list) {
-        //            _header.Id = "" + c;
-        //            var res = _service.Create(_header).Result;
-        //        }
-        //    }).InnerExceptions[0];
-        //    Assert.IsInstanceOf<InvalidIdException>(ex);
+        [Test]
+        public async Task Should_not_create_timserie_with_invalid_id() {
+            var list = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars());
+            try {
+                foreach (var c in list) {
+                    _header.Id = "" + c;
+                    await _service.Create(_header);
+                    Assert.Fail("Should not permit char " + c);
+                }
+            }
+            catch (InvalidIdException) { }
+        }
 
-        //}
+        [Test]
+        public async Task Should_not_create_timserie_with_existing_id() {
+            await _service.Create(_header);
+            Assert.ThrowsAsync<DuplicateKeyException>(() => _service.Create(_header));
+        }
     }
 }

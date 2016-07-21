@@ -12,8 +12,9 @@ namespace Neutrino.Sample.Cmd {
                 var client = new NeutrinoClient(new Uri("http://localhost:34177/", UriKind.Absolute));
                 Console.WriteLine("Start");
 
-                //var header = new TimeSerieHeader("id1", new DateTime(2016, 01, 01), new DateTime(2018, 01, 01), Interval.FiveMinutes, OccurrenceKind.Decimal, 100);
-                //client.CreateTimeSerieAsync(header).Wait();
+                var header = new TimeSerieHeader("id1", new DateTime(2016, 01, 01), new DateTime(2018, 01, 01), Interval.FiveMinutes, OccurrenceKind.Decimal, 100);
+                client.CreateTimeSerieAsync(header).Wait();
+                client.CreateTimeSerieAsync(header).Wait();
 
                 var date = new DateTime(2016, 01, 01);
                 var list = new List<OccurrenceDecimal>();

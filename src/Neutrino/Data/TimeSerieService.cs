@@ -19,6 +19,11 @@ namespace Neutrino.Data {
         public async Task<string> Create(TimeSerieHeader timeSerieHeader) {
             var fullPath = _fileFinder.GetDataSetPath(timeSerieHeader.Id);
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+
+            if (_fileStreamOpener.FileExists(fullPath)) {
+                throw new DuplicateKeyException(timeSerieHeader.Id);
+            }
+
             var header = timeSerieHeader.Serialize();
 
             using (var fs = _fileStreamOpener.OpenForCreation(fullPath)) {
@@ -116,16 +121,23 @@ namespace Neutrino.Data {
                     }
                 }
             }
-            catch (FileNotFoundException) when (DefaultTimeSerieHeader != null) {
-                var header = new TimeSerieHeader(id, 
-                                                 DefaultTimeSerieHeader.Start, 
-                                                 DefaultTimeSerieHeader.End, 
-                                                 DefaultTimeSerieHeader.IntervalInMillis, 
-                                                 DefaultTimeSerieHeader.OcurrenceType, 
-                                                 DefaultTimeSerieHeader.AutoExtendStep);
-                await Create(header);
-                await Save(id, occurrences);
+            catch (DirectoryNotFoundException) when (DefaultTimeSerieHeader != null) {
+                await CreateDefaultTimeSerieAndRetry(id, occurrences);
             }
+            catch (FileNotFoundException) when (DefaultTimeSerieHeader != null) {
+                await CreateDefaultTimeSerieAndRetry(id, occurrences);
+            }
+        }
+
+        private async Task CreateDefaultTimeSerieAndRetry(string id, List<Occurrence> occurrences) {
+            var header = new TimeSerieHeader(id,
+                DefaultTimeSerieHeader.Start,
+                DefaultTimeSerieHeader.End,
+                DefaultTimeSerieHeader.IntervalInMillis,
+                DefaultTimeSerieHeader.OcurrenceType,
+                DefaultTimeSerieHeader.AutoExtendStep);
+            await Create(header);
+            await Save(id, occurrences);
         }
 
         private static void EnsureDateRange(BinaryWriter bw, TimeSerieHeader timeSerieHeader, DateTime dateEnd) {

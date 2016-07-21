@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Neutrino.Data;
 
 namespace Neutrino.Tests.Stubs {
     public class FileStreamOpenerStub : IFileStreamOpener {
+        private readonly FileFinder _fileFinder;
         private Dictionary<string, StubStream> _streamsInfo { get; } = new Dictionary<string, StubStream>();
+
+        public FileStreamOpenerStub(FileFinder fileFinder) {
+            _fileFinder = fileFinder;
+        }
 
         public Stream OpenWithoutLock(string path) {
             if (!_streamsInfo.ContainsKey(path)) {
@@ -34,8 +40,13 @@ namespace Neutrino.Tests.Stubs {
             return stream;
         }
 
+        public bool FileExists(string path) {
+            return _streamsInfo.ContainsKey(path);
+        }
+
         public StubStream GetStreamInfo(string timeSerieId) {
-            return _streamsInfo[Path.Combine(FileFinderStub.DataSetPath, timeSerieId)];
+            var key = _fileFinder.GetDataSetPath(timeSerieId);
+            return _streamsInfo[key];
         }
     }
 

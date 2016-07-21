@@ -24,6 +24,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Client", "src\Neut
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Client.Tests", "Tests\Neutrino.Client.Tests\Neutrino.Client.Tests.xproj", "{3479EBF5-EB57-423D-9F13-BAAA5CC5A21F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{E6208CD5-8AAD-45D9-9C8A-0D489029AF0F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Neutrino.Client.Sample", "samples\Neutrino.Client.Sample\Neutrino.Client.Sample.xproj", "{3D89798E-3405-4164-B412-C24D9E5DB085}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +58,10 @@ Global
 		{3479EBF5-EB57-423D-9F13-BAAA5CC5A21F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3479EBF5-EB57-423D-9F13-BAAA5CC5A21F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3479EBF5-EB57-423D-9F13-BAAA5CC5A21F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D89798E-3405-4164-B412-C24D9E5DB085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D89798E-3405-4164-B412-C24D9E5DB085}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D89798E-3405-4164-B412-C24D9E5DB085}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D89798E-3405-4164-B412-C24D9E5DB085}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +73,6 @@ Global
 		{5A58C562-393D-4C99-B945-F6E6EAC5B702} = {0F7849C6-DC80-4F04-B8BF-11A88D837C9F}
 		{2AD3395F-6C8E-4C91-973D-59CBE5F15D93} = {0F7849C6-DC80-4F04-B8BF-11A88D837C9F}
 		{3479EBF5-EB57-423D-9F13-BAAA5CC5A21F} = {7C42CBDF-0912-4DB4-8E41-FF84AE68D3C9}
+		{3D89798E-3405-4164-B412-C24D9E5DB085} = {E6208CD5-8AAD-45D9-9C8A-0D489029AF0F}
 	EndGlobalSection
 EndGlobal

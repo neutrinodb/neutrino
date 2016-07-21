@@ -13,5 +13,9 @@ namespace Neutrino.Data {
         public Stream OpenForCreation(string path) {
             return new FileStream(path, FileMode.CreateNew);
         }
+
+        public bool FileExists(string path) {
+            return File.Exists(path);
+        }
     }
 }

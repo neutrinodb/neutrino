@@ -2,6 +2,7 @@
   "projects": [
     "src",
     "test",
+    "samples",
     "wrap"
   ],
   "sdk": {

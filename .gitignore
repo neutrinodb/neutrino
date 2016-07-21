@@ -23,3 +23,6 @@ tests/Neutrino.Client.Tests/bin/
 src/Neutrino.Api/DataSets/
 src/Neutrino.Client/obj/
 src/Neutrino.Client/bin/
+samples/Neutrino.Client.Sample/obj/
+samples/Neutrino.Client.Sample/bin/
+src/Neutrino.Api/Properties/PublishProfiles/
